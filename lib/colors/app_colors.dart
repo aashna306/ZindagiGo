@@ -7,6 +7,8 @@ class AppColors {
   static const Color pink = Color(0xFFFFAFBD); 
   static const Color searchBar = Color(0xFFFFF5F5);
   static const Color boxShadow = Color(0xFF313030);
+  static const Color InputInfo = Color.fromRGBO(45, 45, 45, 0.80);
+  static const Color lineColor = Color(0xFFD4859E);
   // Replace with your color
   // Add more colors as needed
 }

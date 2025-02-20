@@ -76,6 +76,12 @@ flutter:
       - lib/imagesOrlogo/Torch.png
       - lib/imagesOrlogo/Zoom.png
       - lib/imagesOrlogo/Community.png
+      - lib/imagesOrlogo/EmailLogo.png
+      - lib/imagesOrlogo/PasswordLogo.png
+      - lib/imagesOrlogo/PhoneNo.png
+      - lib/imagesOrlogo/Gmail.png
+      - lib/imagesOrlogo/Google.png
+      - lib/imagesOrlogo/CompleteProfile.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
