@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:gsc_project/pages/new_Account.dart';
 import 'package:gsc_project/pages/home_page.dart';
 import 'package:gsc_project/pages/userInfo.dart';
-import 'package:gsc_project/pages/welcome_page.dart';
+import 'pages/splash_screen.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -18,14 +24,13 @@ class MyApp extends StatelessWidget {
       title: 'Flutter App',
       initialRoute: '/',
       routes: {
-        '/': (context) => WelcomePage(),
+        '/': (context) => SplashScreen(),
         '/new_account': (context) => NewAccountPage(),
         '/user_info':(context) => UserInfoPage(),
         '/home': (context) => HomePage(),
       },
 
-      theme: ThemeData(
-      ),
+      theme: ThemeData(),
     );
   }
 }
