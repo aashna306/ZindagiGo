@@ -9,6 +9,5 @@ class AppColors {
   static const Color boxShadow = Color(0xFF313030);
   static const Color InputInfo = Color.fromRGBO(45, 45, 45, 0.80);
   static const Color lineColor = Color(0xFFD4859E);
-  // Replace with your color
-  // Add more colors as needed
+  static const Color ReminderBox = Color.fromRGBO(255, 181, 166, 0.80);
 }

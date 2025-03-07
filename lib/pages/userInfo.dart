@@ -52,16 +52,11 @@ class UserInfoPage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("User info saved successfully")),
         );
-
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const HomePage()),
-        // );
-          Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-        (Route<dynamic> route) => false, // Remove all previous routes
-      );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+          (Route<dynamic> route) => false, 
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error: ${response.body}")),
@@ -103,7 +98,7 @@ class UserInfoPage extends StatelessWidget {
                 ),
                 child: ClipOval(
                   child: Image.asset(
-                    'lib/imagesOrlogo/CompleteProfile.png', // Update the correct asset path
+                    'lib/imagesOrlogo/CompleteProfile.png', 
                     width: 50,
                     height: 50,
                   ),
@@ -264,7 +259,7 @@ class UserInfoPage extends StatelessWidget {
                     labelStyle: TextStyle(color: AppColors.InputInfo),
                     enabledBorder: UnderlineInputBorder(
                       borderSide:
-                          BorderSide(color: AppColors.lineColor, width: 3.0),
+                      BorderSide(color: AppColors.lineColor, width: 3.0),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: AppColors.pink, width: 3.0),
