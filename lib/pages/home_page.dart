@@ -4,6 +4,9 @@ import 'package:gsc_project/pages/Zoom_page.dart';
 import '../services/auth_service.dart';
 import 'welcome_page.dart';
 import 'package:torch_light/torch_light.dart';
+import 'package:gsc_project/pages/Entertainment.dart';
+import 'package:gsc_project/pages/Fitness.dart';
+import 'package:gsc_project/pages/MedicalRecords.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
