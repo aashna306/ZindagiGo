@@ -1,7 +1,12 @@
+// ignore: file_names
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gsc_project/colors/app_colors.dart';
 import 'package:gsc_project/main.dart';
 import 'package:gsc_project/pages/userInfo.dart';
+import '../services/mongo_service.dart';
+import '../services/auth_service.dart';
+import 'home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +24,42 @@ class _NewAccountPageState extends State<NewAccountPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscureText = true;
+
+// sign up with mail-password function
+
+  Future<void> signUpWithEmail() async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const UserInfoPage()),
+      );
+    } catch (e) {
+      print("Sign Up Error: $e");
+    }
+  }
+
+  void loginWithGoogle(BuildContext context) async {
+    var usern = await AuthService().signInWithGoogle();
+    if (usern?.user != null) {
+      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomePage()));
+      String email = usern!.user!.email!;
+      bool exists = await MongoService().checkIfEmailExists(email);
+      print("Email Exists in DB: $exists");
+      if (exists) {
+        // Email exists, go to HomePage
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => HomePage()));
+      } else {
+        // Email doesn't exist, go to UserInfoPage
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => UserInfoPage()));
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +98,8 @@ class _NewAccountPageState extends State<NewAccountPage> {
                     labelText: "Enter Email",
                     labelStyle: TextStyle(color: AppColors.InputInfo),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.lineColor, width: 3.0),
+                      borderSide:
+                          BorderSide(color: AppColors.lineColor, width: 3.0),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: AppColors.pink, width: 3.0),
@@ -86,7 +128,8 @@ class _NewAccountPageState extends State<NewAccountPage> {
                     labelText: "Enter Password",
                     labelStyle: TextStyle(color: AppColors.InputInfo),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.lineColor, width: 3.0),
+                      borderSide:
+                          BorderSide(color: AppColors.lineColor, width: 3.0),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: AppColors.pink, width: 3.0),
@@ -113,18 +156,22 @@ class _NewAccountPageState extends State<NewAccountPage> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const UserInfoPage()),
-                    );
-                  }
-                },
+                onPressed: signUpWithEmail,
+                // {
+                // if (_formKey.currentState!.validate()) {
+
+                //   // Navigator.push(
+                //   //   context,
+                //   //   MaterialPageRoute(builder: (context) => const UserInfoPage()),
+                //   // );
+                // }
+                // }
+
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.lineColor,
                   iconColor: AppColors.pink,
-                  padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 35, vertical: 5),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -157,6 +204,8 @@ class _NewAccountPageState extends State<NewAccountPage> {
                       iconSize: 40,
                       onPressed: () {
                         // Add your onPressed code here!
+                        //
+                        loginWithGoogle(context);
                       },
                     ),
                   ),

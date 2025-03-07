@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gsc_project/colors/app_colors.dart';
+import 'package:gsc_project/pages/Zoom_page.dart';
+import '../services/auth_service.dart';
+import 'welcome_page.dart';
+import 'package:torch_light/torch_light.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,6 +13,29 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  void logout(BuildContext context) async {
+    await AuthService().signOut();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (_) => WelcomePage()));
+  }
+
+  bool isTorchOn = false;
+
+  Future<void> toggleTorch() async {
+    try {
+      if (isTorchOn) {
+        await TorchLight.disableTorch();
+      } else {
+        await TorchLight.enableTorch();
+      }
+      setState(() {
+        isTorchOn = !isTorchOn;
+      });
+    } catch (e) {
+      print("Torch Error: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +107,8 @@ class _HomePageState extends State<HomePage> {
             DrawerHeader(
               //decoration: BoxDecoration(color: AppColors.drawerColor),
               decoration: BoxDecoration(
-                color: AppColors.drawerColor, // Make sure it blends with the drawer background
+                color: AppColors
+                    .drawerColor, // Make sure it blends with the drawer background
               ),
               child: Row(
                 children: [
@@ -88,9 +116,9 @@ class _HomePageState extends State<HomePage> {
                     width: 40,
                     height: 40,
                     child: const Icon(
-                      Icons.favorite, 
+                      Icons.favorite,
                       color: AppColors.pink,
-                      size: 50, 
+                      size: 50,
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -191,7 +219,8 @@ class _HomePageState extends State<HomePage> {
               ),
               title: const Text("Logout"),
               onTap: () {
-                Navigator.pushNamed(context, '/logoutpage');
+                // Navigator.pushNamed(context, '/logoutpage');
+                logout(context);
               },
             ),
 
@@ -238,7 +267,6 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -439,7 +467,9 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    toggleTorch();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFFF5F5),
                     shape: RoundedRectangleBorder(
@@ -474,7 +504,12 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ZoomPage()),
+                      );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFFF5F5),
                     shape: RoundedRectangleBorder(
@@ -586,7 +621,7 @@ class _HomePageState extends State<HomePage> {
             ),
             Spacer(flex: 2),
             Padding(
-              padding: const EdgeInsets.fromLTRB(265,50, 5, 70),
+              padding: const EdgeInsets.fromLTRB(265, 50, 5, 70),
               child: IconButton(
                 onPressed: () {},
                 icon: Image.asset(
@@ -605,7 +640,6 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-    
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(bottom: 10),

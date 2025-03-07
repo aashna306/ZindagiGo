@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gsc_project/main.dart';
 import 'package:gsc_project/pages/home_page.dart';
 import 'package:gsc_project/colors/app_colors.dart';
+import '../services/mongo_service.dart';
+import '../services/auth_service.dart';
+import 'userInfo.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +23,45 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscureText = true;
+
+//function to login using email-password
+
+  Future<void> loginWithEmail() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+        (Route<dynamic> route) => false, // Remove all previous routes
+      );
+    } catch (e) {
+      print("Login Error: $e");
+    }
+  }
+
+
+    void loginWithGoogle(BuildContext context) async {
+    var usern = await AuthService().signInWithGoogle();
+    if (usern?.user != null) {
+      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomePage()));
+      String email = usern!.user!.email!;
+      bool exists = await MongoService().checkIfEmailExists(email);
+      print("Email Exists in DB: $exists");
+      if (exists) {
+        // Email exists, go to HomePage
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => HomePage()));
+      } else {
+        // Email doesn't exist, go to UserInfoPage
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => UserInfoPage()));
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +100,8 @@ class _LoginPageState extends State<LoginPage> {
                     labelText: "Enter Email",
                     labelStyle: TextStyle(color: AppColors.InputInfo),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.lineColor, width: 3.0),
+                      borderSide:
+                          BorderSide(color: AppColors.lineColor, width: 3.0),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: AppColors.pink, width: 3.0),
@@ -86,7 +130,8 @@ class _LoginPageState extends State<LoginPage> {
                     labelText: "Enter Password",
                     labelStyle: TextStyle(color: AppColors.InputInfo),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.lineColor, width: 3.0),
+                      borderSide:
+                          BorderSide(color: AppColors.lineColor, width: 3.0),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: AppColors.pink, width: 3.0),
@@ -113,18 +158,12 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
-                    );
-                  }
-                },
+                onPressed: loginWithEmail,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.lineColor,
                   iconColor: AppColors.pink,
-                  padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 35, vertical: 5),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -157,6 +196,12 @@ class _LoginPageState extends State<LoginPage> {
                       iconSize: 40,
                       onPressed: () {
                         // Add your onPressed code here!
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (_) => GoogleLoginScreen()));
+
+                         loginWithGoogle(context);
                       },
                     ),
                   ),

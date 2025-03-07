@@ -1,20 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:gsc_project/colors/app_colors.dart';
 import 'package:gsc_project/pages/home_page.dart';
+import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
 
 class UserInfoPage extends StatelessWidget {
   const UserInfoPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-    final _nameController = TextEditingController();
-    final _dobController = TextEditingController();
-    final _phoneController = TextEditingController();
-    final _countryCodeController = TextEditingController();
-    final _emailController = TextEditingController();
-    final _emergencyContactController = TextEditingController();
-    String? _selectedGender;
+    final formKey = GlobalKey<FormState>();
+    final nameController = TextEditingController();
+    final dobController = TextEditingController();
+    final phoneController = TextEditingController();
+    final countryCodeController = TextEditingController();
+    final emailController = TextEditingController();
+    final emergencyContactController = TextEditingController();
+    String? selectedGender;
+
+    Future<void> saveUserData(BuildContext context) async {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("User not logged in")),
+        );
+        return;
+      }
+
+      final url = Uri.parse(
+        "http://10.10.226.164/saveUser"); 
+        // 10.10.226.164
+        //// Replace with your server URL
+      final token = await user.getIdToken(); // Get Firebase token
+
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "token": token,
+          "name": nameController.text,
+          "dob": dobController.text,
+          "gender": selectedGender,
+          "phone": phoneController.text,
+          "email": emailController.text,
+          "emergencyContact": emergencyContactController.text,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("User info saved successfully")),
+        );
+
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const HomePage()),
+        // );
+          Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+        (Route<dynamic> route) => false, // Remove all previous routes
+      );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: ${response.body}")),
+        );
+      }
+    }
 
     return Scaffold(
       backgroundColor: AppColors.HomePageColor,
@@ -24,7 +77,7 @@ class UserInfoPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -59,12 +112,13 @@ class UserInfoPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: TextFormField(
-                  controller: _nameController,
+                  controller: nameController,
                   decoration: InputDecoration(
                     labelText: "Name",
                     labelStyle: TextStyle(color: AppColors.InputInfo),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.lineColor, width: 3.0),
+                      borderSide:
+                          BorderSide(color: AppColors.lineColor, width: 3.0),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: AppColors.pink, width: 3.0),
@@ -82,12 +136,13 @@ class UserInfoPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: TextFormField(
-                  controller: _dobController,
+                  controller: dobController,
                   decoration: InputDecoration(
-                    labelText: "D.O.B (dd/mm/yy)",
+                    labelText: "D.O.B (dd/mm/yyyy)",
                     labelStyle: TextStyle(color: AppColors.InputInfo),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.lineColor, width: 3.0),
+                      borderSide:
+                          BorderSide(color: AppColors.lineColor, width: 3.0),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: AppColors.pink, width: 3.0),
@@ -97,9 +152,9 @@ class UserInfoPage extends StatelessWidget {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your date of birth';
                     }
-                    final dobRegex = RegExp(r'^\d{2}/\d{2}/\d{2}$');
+                    final dobRegex = RegExp(r'^\d{2}/\d{2}/\d{4}$');
                     if (!dobRegex.hasMatch(value)) {
-                      return 'Please enter a valid date of birth (dd/mm/yy)';
+                      return 'Please enter a valid date of birth (dd/mm/yyyy)';
                     }
                     return null;
                   },
@@ -109,25 +164,27 @@ class UserInfoPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: DropdownButtonFormField<String>(
-                  value: _selectedGender,
+                  value: selectedGender,
                   decoration: InputDecoration(
                     labelText: "Gender",
                     labelStyle: TextStyle(color: AppColors.InputInfo),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.lineColor, width: 3.0),
+                      borderSide:
+                          BorderSide(color: AppColors.lineColor, width: 3.0),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: AppColors.pink, width: 3.0),
                     ),
                   ),
-                  items: <String>['Male', 'Female', 'Other'].map((String value) {
+                  items:
+                      <String>['Male', 'Female', 'Other'].map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
                     );
                   }).toList(),
                   onChanged: (String? newValue) {
-                    _selectedGender = newValue;
+                    selectedGender = newValue;
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -145,15 +202,17 @@ class UserInfoPage extends StatelessWidget {
                     Expanded(
                       flex: 2,
                       child: TextFormField(
-                        controller: _countryCodeController,
+                        controller: countryCodeController,
                         decoration: InputDecoration(
                           labelText: "Country Code",
                           labelStyle: TextStyle(color: AppColors.InputInfo),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: AppColors.lineColor, width: 3.0),
+                            borderSide: BorderSide(
+                                color: AppColors.lineColor, width: 3.0),
                           ),
                           focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: AppColors.pink, width: 3.0),
+                            borderSide:
+                                BorderSide(color: AppColors.pink, width: 3.0),
                           ),
                         ),
                         validator: (value) {
@@ -168,15 +227,17 @@ class UserInfoPage extends StatelessWidget {
                     Expanded(
                       flex: 5,
                       child: TextFormField(
-                        controller: _phoneController,
+                        controller: phoneController,
                         decoration: InputDecoration(
                           labelText: "Phone Number",
                           labelStyle: TextStyle(color: AppColors.InputInfo),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: AppColors.lineColor, width: 3.0),
+                            borderSide: BorderSide(
+                                color: AppColors.lineColor, width: 3.0),
                           ),
                           focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: AppColors.pink, width: 3.0),
+                            borderSide:
+                                BorderSide(color: AppColors.pink, width: 3.0),
                           ),
                         ),
                         validator: (value) {
@@ -197,12 +258,13 @@ class UserInfoPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: TextFormField(
-                  controller: _emailController,
+                  controller: emailController,
                   decoration: InputDecoration(
                     labelText: "Email",
                     labelStyle: TextStyle(color: AppColors.InputInfo),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.lineColor, width: 3.0),
+                      borderSide:
+                          BorderSide(color: AppColors.lineColor, width: 3.0),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: AppColors.pink, width: 3.0),
@@ -224,12 +286,13 @@ class UserInfoPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: TextFormField(
-                  controller: _emergencyContactController,
+                  controller: emergencyContactController,
                   decoration: InputDecoration(
                     labelText: "Emergency Contact",
                     labelStyle: TextStyle(color: AppColors.InputInfo),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.lineColor, width: 3.0),
+                      borderSide:
+                          BorderSide(color: AppColors.lineColor, width: 3.0),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: AppColors.pink, width: 3.0),
@@ -246,17 +309,19 @@ class UserInfoPage extends StatelessWidget {
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
-                    );
+                  if (formKey.currentState!.validate()) {
+                    saveUserData(context);
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => const HomePage()),
+                    // );
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.lineColor,
                   iconColor: AppColors.pink,
-                  padding: const EdgeInsets.symmetric(horizontal: 150, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 150, vertical: 10),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
