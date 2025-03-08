@@ -1,0 +1,24 @@
+{
+  "name": "elderlypeopleapp",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@google-cloud/vision": "^4.3.2",
+    "@google/generative-ai": "^0.21.0",
+    "@vitalets/google-translate-api": "^9.2.1",
+    "axios": "^1.8.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "i18next": "^24.2.2",
+    "i18next-fs-backend": "^2.6.0"
+  }
+}
