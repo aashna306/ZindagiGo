@@ -34,11 +34,11 @@ const { translate } = require('@vitalets/google-translate-api');
 const translateText = async (text, targetLang) => {
     try {
         const response = await translate(text, { to: targetLang });
-        console.log("Translated Text:", response.text);  // Log the translated text
+        console.log("Translated Text:", response.text); 
         return response.text;
     } catch (error) {
         console.error("Error translating text:", error.message);
-        return text;  // Fallback to original text if translation fails
+        return text;
     }
 };
 
