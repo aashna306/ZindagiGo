@@ -31,7 +31,11 @@ class UserInfoPage extends StatelessWidget {
       final url = Uri.parse(
         "http://10.10.226.164/saveUser"); 
         // 10.10.226.164
-        //// Replace with your server URL
+        //in the place of 10.0.2.2  give your ipconfig(run ipconfig in cmd and copy ipv4 ) if you want to run this on real device
+        // 10.0.2.2  this is for emulator
+        // also remember that your pc and device must be connected with same wifi
+        // Use localhost for emulator
+        // Replace with your server URL
       final token = await user.getIdToken(); // Get Firebase token
 
       final response = await http.post(
