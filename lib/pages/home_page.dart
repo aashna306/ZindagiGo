@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gsc_project/colors/app_colors.dart';
 import 'package:gsc_project/pages/Zoom_page.dart';
 import '../services/auth_service.dart';
+import 'package:gsc_project/pages/chat_page.dart';
 import 'welcome_page.dart';
 import 'package:torch_light/torch_light.dart';
 import 'package:gsc_project/pages/Entertainment.dart';
@@ -770,7 +771,9 @@ class _HomePageState extends State<HomePage> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 20, bottom: 70),
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+  Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatPage()));
+                    },
                     icon: Image.asset(
                       'lib/imagesOrlogo/Chatbot.png',
                       width: 76,
