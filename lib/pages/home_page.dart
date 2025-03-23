@@ -772,7 +772,7 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.only(right: 20, bottom: 70),
                   child: IconButton(
                     onPressed: () {
-  Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatPage()));
                     },
                     icon: Image.asset(
                       'lib/imagesOrlogo/Chatbot.png',

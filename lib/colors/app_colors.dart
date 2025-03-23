@@ -11,4 +11,6 @@ class AppColors {
   static const Color lineColor = Color(0xFFD4859E);
   static const Color ReminderBox = Color.fromRGBO(255, 181, 166, 0.80);
   static const Color ButtonColor = Color(0xFFD4859E);
+  static const Color Upload = Color.fromRGBO(132, 194, 164, 0.70);
+  static const Color MedicalProfile = Color(0xFFD9D9D9);
 }
