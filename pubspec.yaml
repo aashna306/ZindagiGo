@@ -98,6 +98,8 @@ flutter:
       - lib/imagesOrlogo/MedicalRecords.png
       - lib/imagesOrlogo/Yoga.png
       - lib/imagesOrlogo/YT.png
+      - lib/imagesOrlogo/PhoneOTP.png
+      - lib/imagesOrlogo/OTPbottom.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

@@ -1,0 +1,2 @@
+D:/flutterProjects/git clone/Gsc_Project1/android/app/.cxx/Debug/202s5ns6/x86_64/CMakeFiles/edit_cache.dir
+D:/flutterProjects/git clone/Gsc_Project1/android/app/.cxx/Debug/202s5ns6/x86_64/CMakeFiles/rebuild_cache.dir

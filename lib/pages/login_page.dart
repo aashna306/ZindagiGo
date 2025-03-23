@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gsc_project/main.dart';
 import 'package:gsc_project/pages/home_page.dart';
 import 'package:gsc_project/colors/app_colors.dart';
+import 'package:gsc_project/pages/login_by_phoneno.dart';
 import '../services/mongo_service.dart';
 import '../services/auth_service.dart';
 import 'userInfo.dart';
@@ -225,7 +226,10 @@ class _LoginPageState extends State<LoginPage> {
                       icon: Image.asset("lib/imagesOrlogo/PhoneNo.png"),
                       iconSize: 40,
                       onPressed: () {
-                        // Add your onPressed code here!
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const LoginByPhoneno()),
+                          );
                       },
                     ),
                   ),
