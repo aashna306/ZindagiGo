@@ -9,6 +9,18 @@ import 'package:torch_light/torch_light.dart';
 import 'package:gsc_project/pages/Entertainment.dart';
 import 'package:gsc_project/pages/Fitness.dart';
 import 'package:gsc_project/pages/MedicalRecords.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+// import 'package:url_launcher/url_launcher.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+// import 'package:flutter_background_service_android/flutter_background_service_android.dart';
+import 'package:sensors_plus/sensors_plus.dart';
+// import 'package:flutter_sensors/flutter_sensors.dart' as flutter_sensors;
+import 'dart:async';
+import 'dart:math';
+
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,12 +30,151 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+
+  double threshold = 15.0; // G-force threshold for fall detection
+  int inactivityTime = 5; // Time of inactivity after fall
+  bool hasFallen = false;
+  Timer? inactivityTimer;
+  String emergencyNumber = "";//your emergency number 
+  final stt.SpeechToText _speech = stt.SpeechToText();
+  bool _isListening = false;
+  final MethodChannel platform = MethodChannel('com.example.gsc_project/call');
+StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
+
+
+  int _selectedIndex = 0;
+    void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (index == 1) {
+      _startListening();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _requestPermissions();
+    _startFallDetection();
+    _startBackgroundService();
+  }
+
+  // Request permissions
+  void _requestPermissions() async {
+  Map<Permission, PermissionStatus> statuses = await [
+    Permission.activityRecognition,
+    Permission.sensors,
+    Permission.phone,
+    Permission.microphone,
+  ].request();
+
+  if (statuses[Permission.phone]!.isDenied) {
+    print("Phone call permission denied. Please enable it manually.");
+  }
+  if (statuses[Permission.microphone]!.isDenied) {
+    print("Microphone permission denied. Voice SOS may not work.");
+  }
+}
+
+  // Start fall detection using accelerometer
+  void _startFallDetection() async {
+  _accelerometerSubscription = accelerometerEventStream().listen((event) {
+      double acceleration = sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
+
+      if (acceleration < 2.0) {
+        hasFallen = true;
+        print("Possible fall detected!");
+
+        // Start inactivity timer to confirm fall
+        inactivityTimer = Timer(Duration(seconds: inactivityTime), () {
+          if (hasFallen) {
+            print("Fall confirmed! Triggering SOS...");
+            _makeCall();
+            hasFallen = false;
+          }
+        });
+      } else if (acceleration > threshold) {
+        hasFallen = false;
+        inactivityTimer?.cancel();
+      }
+    });
+
+  }
+
+
+
+  // Initialize background service
+  void _startBackgroundService() async {
+    final service = FlutterBackgroundService();
+
+    await service.configure(
+      androidConfiguration: AndroidConfiguration(
+        onStart: _onBackgroundServiceStart,
+        autoStart: true,
+        isForegroundMode: true,
+      ),
+      iosConfiguration: IosConfiguration(),
+    );
+
+    service.startService();
+  }
+
+  // Background service function
+ static void _onBackgroundServiceStart(ServiceInstance service) async {
+   accelerometerEventStream().listen((event) {
+      double acceleration = sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
+      if (acceleration < 2.0) {
+        service.invoke('fallDetected', {"message": "Fall detected!"});
+      }
+    });
+
+}
+// Start listening for voice commands
+  void _startListening() async {
+    bool available = await _speech.initialize();
+    if (available) {
+      setState(() => _isListening = true);
+      _speech.listen(onResult: (result) {
+        String command = result.recognizedWords.toLowerCase();
+        print("Recognized: $command"); // Debugging
+
+        if (command.contains("help")) {
+          _speech.stop(); // Stop listening after detecting the keyword
+          _makeCall();
+        }
+      });
+    } else {
+      print("Speech recognition not available");
+    }
+  }
+
+
+  
+  void _makeCall() async {
+     try {
+    await platform.invokeMethod('makeCall', {'phoneNumber': ''});
+  } on PlatformException catch (e) {
+    print("Failed to make call: '${e.message}'.");
+  }
+}
+
+@override
+  void dispose() {
+    inactivityTimer?.cancel();
+    super.dispose();
+  }
+
   void logout(BuildContext context) async {
     await AuthService().signOut();
     Navigator.pushReplacement(
       context, MaterialPageRoute(builder: (_) => WelcomePage())
     );
   }
+
+
 
   bool isTorchOn = false;
 
@@ -836,6 +987,8 @@ class _HomePageState extends State<HomePage> {
                       label: 'Location',
                     ),
                   ],
+                    currentIndex: _selectedIndex,
+                    onTap: _onItemTapped,
                 ),
               ),
             ),
