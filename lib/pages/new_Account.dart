@@ -7,6 +7,8 @@ import 'package:gsc_project/pages/userInfo.dart';
 import '../services/mongo_service.dart';
 import '../services/auth_service.dart';
 import 'home_page.dart';
+import 'package:gsc_project/pages/login_by_phoneno.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -230,7 +232,12 @@ class _NewAccountPageState extends State<NewAccountPage> {
                       iconSize: 40,
                       onPressed: () {
                         // Add your onPressed code here!
+                         Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) =>  LoginByPhoneno()),
+                          );
                       },
+                      
                     ),
                   ),
                 ],
