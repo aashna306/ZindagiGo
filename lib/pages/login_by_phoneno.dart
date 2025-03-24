@@ -1,14 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gsc_project/colors/app_colors.dart';
-import 'package:gsc_project/main.dart';
+// import 'package:gsc_project/main.dart';
 import 'package:gsc_project/pages/OTP_page.dart';
 
-void main() {
-  runApp(const MyApp());
+class LoginByPhoneno extends StatefulWidget {
+  const LoginByPhoneno({super.key});
+
+  @override
+  _LoginByPhonenoState createState() => _LoginByPhonenoState();
 }
 
-class LoginByPhoneno extends StatelessWidget {
-  const LoginByPhoneno({super.key});
+class _LoginByPhonenoState extends State<LoginByPhoneno> {
+  final TextEditingController phoneController = TextEditingController();
+   String? verificationId;
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +48,7 @@ class LoginByPhoneno extends StatelessWidget {
             const SizedBox(height: 80),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
-              child: TextFormField(
+              child: TextFormField(controller: phoneController,
                 decoration: InputDecoration(
                   icon: Icon(Icons.phone, color: AppColors.lineColor),
                   labelText: "Enter your Phone Number",
@@ -57,16 +63,31 @@ class LoginByPhoneno extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 80),
-            Container(
+            SizedBox(
               width: screenWidth - 40, // Adjust width based on screen size
               height: 50,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const OtpPage()),
-                  );
-                },
+                onPressed: () async{
+            FirebaseAuth.instance.verifyPhoneNumber(
+              phoneNumber: phoneController.text,
+              verificationCompleted: (PhoneAuthCredential){}, 
+              verificationFailed:(error){
+                print(error.toString());
+              }, 
+              codeSent: (verificationId, forcereSendingToken){
+Navigator.push(context, MaterialPageRoute(builder: (context)=> OtpPage(phonenumber:phoneController.text, verificationId:verificationId)));
+              },
+             codeAutoRetrievalTimeout: (verificationId){
+              print("auto retrivel time out");
+             });
+          }
+                //  () {
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(builder: (context) => const OtpPage()),
+                //   );
+                // }
+                ,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.ButtonColor,
                   shape: RoundedRectangleBorder(
