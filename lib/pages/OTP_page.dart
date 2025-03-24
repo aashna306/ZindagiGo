@@ -13,11 +13,15 @@ class OtpPage extends StatefulWidget {
   State<OtpPage> createState() => _OtpPageState();
 }
 
+
+
+
 class _OtpPageState extends State<OtpPage> {
   final List<TextEditingController> otpControllers =
       List.generate(6, (index) => TextEditingController());
-  final FocusNode focusNodes = FocusNode();
-  
+  final List<FocusNode> focusNodes = 
+      List.generate(6, (index) => FocusNode()); // ✅ Fix: List of FocusNodes
+
   String getOtpCode() {
     return otpControllers.map((controller) => controller.text).join();
   }
@@ -45,6 +49,7 @@ class _OtpPageState extends State<OtpPage> {
       );
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,22 +58,15 @@ class _OtpPageState extends State<OtpPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 70),
-            Image.asset(
-              "lib/imagesOrlogo/PhoneOTP.png",
-            ),
+            Image.asset("lib/imagesOrlogo/PhoneOTP.png"),
             const SizedBox(height: 20),
             const Text(
               "Enter the 6 digit OTP sent to this phone number :",
-              style: TextStyle(
-                fontSize: 16,
-              ),
+              style: TextStyle(fontSize: 16),
             ),
             const Text(
               "XXXXXXXXXX",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             Padding(
@@ -80,33 +78,24 @@ class _OtpPageState extends State<OtpPage> {
                     width: 40,
                     child: TextFormField(
                       controller: otpControllers[index],
-                      focusNode: focusNodes,
+                      focusNode: focusNodes[index], // ✅ Assign unique FocusNode
                       textAlign: TextAlign.center,
                       decoration: InputDecoration(
-                            counterText: "",
+                        counterText: "",
                         enabledBorder: UnderlineInputBorder(
-                          borderSide:
-                              BorderSide(color: AppColors.lineColor, width: 3.0),
+                          borderSide: BorderSide(color: AppColors.lineColor, width: 3.0),
                         ),
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: AppColors.pink, width: 3.0),
                         ),
-                        // enabledBorder: UnderlineInputBorder(
-                        //   borderSide: BorderSide(
-                        //       color: AppColors.lineColor, width: 3.0),
-                        // ),
-                        // focusedBorder: UnderlineInputBorder(
-                        //   borderSide:
-                        //       BorderSide(color: AppColors.pink, width: 3.0),
-                        // ),
                       ),
                       keyboardType: TextInputType.number,
                       maxLength: 1,
-                        onChanged: (value) {
+                      onChanged: (value) {
                         if (value.isNotEmpty && index < 5) {
-                          FocusScope.of(context).nextFocus();
+                          FocusScope.of(context).requestFocus(focusNodes[index + 1]); // ✅ Move forward
                         } else if (value.isEmpty && index > 0) {
-                          FocusScope.of(context).previousFocus();
+                          FocusScope.of(context).requestFocus(focusNodes[index - 1]); // ✅ Move back
                         }
                       },
                     ),
@@ -116,33 +105,23 @@ class _OtpPageState extends State<OtpPage> {
             ),
             const SizedBox(height: 20),
             TextButton(
-              onPressed: () {
-                // Add resend OTP functionality here
-              },
+              onPressed: () {},
               child: const Text(
                 "Resend OTP?",
-                style: TextStyle(
-                  color: AppColors.pink,
-                ),
+                style: TextStyle(color: AppColors.pink),
               ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: verifyOtp ,
+              onPressed: verifyOtp,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.ButtonColor,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-                textStyle: const TextStyle(
-                  fontSize: 20,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+                textStyle: const TextStyle(fontSize: 20),
               ),
               child: const Text(
                 "Verify",
-                style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),
               ),
             ),
           ],
