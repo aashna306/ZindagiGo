@@ -23,7 +23,7 @@ class OtpPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const Text(
-              "Enter the 5 digit OTP sent to this phone number :",
+              "Enter the 6 digit OTP sent to this phone number :",
               style: TextStyle(
                 fontSize: 16,
               ),
@@ -40,7 +40,7 @@ class OtpPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(5, (index) {
+                children: List.generate(6, (index) {
                   return SizedBox(
                     width: 40,
                     child: TextFormField(
@@ -53,8 +53,8 @@ class OtpPage extends StatelessWidget {
                           borderSide: BorderSide(color: AppColors.pink, width: 3.0),
                         ),
                       ),
-                      keyboardType: TextInputType.number,
-                      maxLength: 1,
+                      //keyboardType: TextInputType.number,
+                      //maxLength: 1,
                     ),
                   );
                 }),

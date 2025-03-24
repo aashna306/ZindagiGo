@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gsc_project/colors/app_colors.dart';
+import 'package:gsc_project/pages/Reminder.dart';
 import 'package:gsc_project/pages/Zoom_page.dart';
 import '../services/auth_service.dart';
 import 'package:gsc_project/pages/chat_page.dart';
@@ -20,7 +21,8 @@ class _HomePageState extends State<HomePage> {
   void logout(BuildContext context) async {
     await AuthService().signOut();
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (_) => WelcomePage()));
+      context, MaterialPageRoute(builder: (_) => WelcomePage())
+    );
   }
 
   bool isTorchOn = false;
@@ -861,7 +863,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 child: FloatingActionButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ReminderPage()),
+                    );
+                  },
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   child: Image.asset(

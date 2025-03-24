@@ -101,6 +101,13 @@ flutter:
       - lib/imagesOrlogo/PhoneOTP.png
       - lib/imagesOrlogo/OTPbottom.png
       - lib/imagesOrlogo/Upload.png
+      - lib/imagesOrlogo/UserInfoImg.png
+      - lib/imagesOrlogo/duration.png
+      - lib/imagesOrlogo/category.png
+      - lib/imagesOrlogo/description.png
+      - lib/imagesOrlogo/alarm.png
+      - lib/imagesOrlogo/Snooze.png
+      - lib/imagesOrlogo/calendar.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
