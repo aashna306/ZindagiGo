@@ -7,18 +7,44 @@ import 'package:gsc_project/pages/home_page.dart';
 import 'package:gsc_project/pages/userInfo.dart';
 import 'pages/splash_screen.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-// import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'dart:async';
-import 'dart:math';
-import 'package:sensors_plus/sensors_plus.dart';
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:android_intent_plus/flag.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await checkAndRequestBatteryOptimization();
   await initializeBackgroundService();
   runApp(const MyApp());
+}
+
+Future<void> checkAndRequestBatteryOptimization() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool? isBatteryOptimizationDisabled =
+      prefs.getBool('battery_optimization_disabled');
+
+  if (isBatteryOptimizationDisabled == null || !isBatteryOptimizationDisabled) {
+    AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
+    if (androidInfo.version.sdkInt >= 23) {
+      // Check if the Android version supports battery optimization
+      var status = await Permission.ignoreBatteryOptimizations.status;
+
+      if (!status.isGranted) {
+        var result = await Permission.ignoreBatteryOptimizations.request();
+        if (result.isGranted) {
+          prefs.setBool('battery_optimization_disabled', true);
+        }
+      } else {
+        prefs.setBool('battery_optimization_disabled', true);
+      }
+    }
+  }
 }
 
 Future<void> initializeBackgroundService() async {
@@ -41,25 +67,40 @@ Future<void> initializeBackgroundService() async {
     ),
   );
 
-  service.startService();
+  bool isRunning = await service.startService();
+  if (!isRunning) {
+    print("Failed to start background service.");
+  } else {
+    print("Background service started successfully.");
+  }
 }
 
 // Background service function
 FutureOr<bool> _onBackgroundServiceStart(ServiceInstance service) async {
   if (service is AndroidServiceInstance) {
     service.setAsForegroundService();
+
+    service.setForegroundNotificationInfo(
+      title: "Fall Detection Active",
+      content: "Monitoring falls...",
+    );
   }
 
-  accelerometerEventStream().listen((event) {
-    double acceleration =
-        sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
-
-    if (acceleration < 2.0) {
-      service.invoke('fallDetected', {"message": "Fall detected!"});
+  // Periodically update the notification
+  Timer.periodic(const Duration(seconds: 1), (timer) {
+    if (service is AndroidServiceInstance) {
+      service.setForegroundNotificationInfo(
+        title: "Running in Background",
+        content: "Monitoring background tasks...",
+      );
     }
   });
 
-  return true;
+  service.on('fallDetected').listen((event) {
+    print("Fall detected in background!");
+  });
+
+  return true; // Ensure the function returns a boolean value
 }
 
 class MyApp extends StatelessWidget {
