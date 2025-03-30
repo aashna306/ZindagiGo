@@ -55,7 +55,7 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void _startListening() async {
+ void _startListening() async {
     bool available = await _speech.initialize(
       onStatus: (status) => print("Status: $status"),
       onError: (error) => print("Error: $error"),
@@ -72,11 +72,12 @@ class _ChatPageState extends State<ChatPage> {
             _controller.text = result.recognizedWords;
           });
 
-          if (result.finalResult) {
+          if (result.finalResult && result.recognizedWords.isNotEmpty) {
+            _speech.stop(); // Ensure we stop listening
             setState(() {
               _isListening = false;
             });
-            sendMessage(_controller.text);
+            sendMessage(_controller.text); // Send only once
           }
         },
         localeId: _selectedLanguage, // Set language for speech recognition
@@ -106,7 +107,11 @@ class _ChatPageState extends State<ChatPage> {
 
     String extractedText = recognizedText.text;
     if (extractedText.isNotEmpty) {
-      _controller.text = extractedText;
+      setState(() {
+        _controller.text = extractedText; // Set extracted text in input
+      });
+
+      // Ensure sendMessage() is only called once
       sendMessage(extractedText);
     }
   }
