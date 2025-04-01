@@ -78,10 +78,10 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 70),
-              const Icon(
-                Icons.favorite,
-                color: AppColors.pink,
-                size: 70,
+              Image.asset(
+                'lib/imagesOrlogo/ZindagiGo_logo.png',
+                width: 130,
+                height: 130,
               ),
               const SizedBox(height: 20),
               const Text(
