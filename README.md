@@ -1,16 +1,178 @@
-# gsc_project
+# Zindagi Go- Elderly Assistance App
 
-A new Flutter project.
+##  About our app
+Zindagi Go is a mobile application designed to assist elderly individuals by providing essential health-related features such as voice-activated SOS, **OCR-based prescription assistance, **reminders for medications and pensions, and **real-time notifications. The app ensures ease of use with a simple UI tailored for elderly users.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+##  Key Features
+=> Voice-Activated SOS - Instantly call for help using voice commands.  
+=> Image to Text (OCR) for Prescriptions - Upload medical records and generate readable text using AI.  
+=> Reminders & Notifications - Set medication and pension reminders with Firebase notifications.  
+=> Secure Authentication - Sign in using Firebase authentication (Email/Password, Google, Phone, etc.).  
+=> Personal Records Storage - Store medical and pension records securely in MongoDB.  
+=> Torch & Magnifying Glass - Assist elderly users in low-light conditions.  
+=> Community Feature - Connect with other elderly users for support and discussions.  
+=> Location Sharing - Share live location with emergency contacts.  
+=> Simple & Elderly-Friendly UI - Minimalist design with large buttons and easy navigation.  
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+##  Tech Stack
+- Frontend: Flutter (Dart)
+- Backend: Node.js (Express)
+- Database: MongoDB (User data, medical records)
+- Authentication: Firebase Auth
+- Storage: MongoDB (for images and user data)
+- AI Integration: Google Gemini API (for prescription assistance)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+##  Installation & Setup
+### Prerequisites
+- Install [Flutter](https://flutter.dev/docs/get-started/install) on your system.
+- Set up a Firebase Project and enable Authentication.
+- Set up MongoDB Atlas or a local MongoDB database.
+- Install Node.js and run the backend server.
+
+### Clone the Repository
+bash
+git clone https://github.com/arpita-goel/Gsc_Project1.git
+cd Gsc_Project1
+
+
+### Install Dependencies
+bash
+flutter pub get
+
+
+### Configure Firebase
+1. Download the google-services.json file from Firebase and place it in android/app/.
+2. Enable Firestore Database and Storage in Firebase Console.
+
+### Set Up Environment Variables
+- Create a .env file in the root directory.
+- Copy the contents of .env.example and fill in your API keys.
+- Example:
+  env
+  MONGO_URI=your-mongodb-uri
+  GEMINI_API_KEY=your-gemini-api-key
+  PORT=your-backend-port
+  
+
+### Run the App
+bash
+flutter run
+
+
+---
+
+##  Backend Setup
+### Prerequisites
+- Ensure you have Node.js installed.
+- Navigate to the backend directory:
+  bash
+  cd backend/src
+  
+- Install dependencies:
+  bash
+  npm install
+  
+- Start the backend server:
+  bash
+  npm start
+  
+- Ensure the backend is running before launching the Flutter app.
+
+---
+
+##  Deployment
+For MVP submission, you can:
+- Generate APK:
+  bash
+  flutter build apk --release
+  
+- Upload APK to Google Drive and share a public link: [🔗 Download APK](YOUR_GOOGLE_DRIVE_LINK_HERE)
+
+---
+
+##  Additional Setup for Testing
+- Battery Optimization
+To ensure background services run properly, please disable battery optimization for this app
+1. Go to Settings > Battery & Performance
+2. Select Battery Optimization
+3. Find "Zindagi Go" and set it to "Don't optimize"
+
+(Steps may vary by device. Check your phone’s settings for more details.)
+
+- Chat & User Info Configuration:
+  - Ensure that your IPv4 address is correctly set for backend communication when testing chat and user details.
+  - If testing on an emulator, provide the emulator’s assigned **IPv4 address.
+  - Recommended: Test on a real device connected to the same WiFi network as the backend server for full feature access.
+  
+- Emergency Contact Setup:
+  - Open HomePage in the code and manually set an emergency contact number to test fall detection and SOS feature.
+
+---
+
+## ⚠ Troubleshooting
+### Common Issues & Fixes
+1. Firebase Authentication Error  
+   - Ensure Firebase Auth is enabled and google-services.json is correctly placed in android/app/.
+2. Backend Connection Issues  
+   - Verify that MongoDB is running and that your backend is connected.
+   - Double-check the IPv4 address configuration in the UserInfoPage and ChatPage.
+3. Notifications Not Working  
+   - Enable notifications in Firebase and check that the app has notification permissions.
+4. Location Sharing Not Working  
+   - Ensure location permissions are granted on the device.
+
+---
+
+##  Permissions Required
+- Camera & Storage - Required for OCR-based prescription scanning.
+- Microphone - Needed for voice-activated SOS feature.
+- Location - Required for live location sharing with emergency contacts.
+- Notification Access - Enables reminders for medications and pensions.
+
+---
+
+##  How to Customize Zindagi Go
+- Change Emergency Contact:
+  - Open HomePage.dart and update the emergencyContact variable.
+- Modify Backend URL:
+  - Update the .env file with the correct PORT and MONGO_URI.
+- IPv4 Configuration:
+  - Ensure phone and laptop are connected to the same WiFi.
+  - Update IPv4 settings in UserInfoPage.dart and ChatPage.dart.
+
+---
+
+##  Future Scope
+- AI-Powered Fall Detection - Improve fall detection accuracy using AI.
+- Smartwatch Integration - Expand accessibility with wearable devices.
+- Enhanced Accessibility - Voice guidance for visually impaired users.
+- Offline Mode - Enable basic features without an internet connection.
+
+---
+
+##  Demo Video
+[🔗 Watch the Demo](https://your-demo-link.com)
+
+---
+
+## 👥 Contributors
+- Team Members- Arpita Goel
+                Lakshita Gupta 
+                Aashna Sharma
+                Vyomika
+
+---
+
+## 📞 Contact
+For any queries, feel free to reach out:
+📧 Email: erlakshitanitj@gmail.com 
+
+---
+
+🔹 Made with ❤ by Team Care Code
