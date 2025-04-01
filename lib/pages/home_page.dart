@@ -432,7 +432,7 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
                   const SizedBox(height: 5),
                   Container(
                     width: 350,
-                    height: 130,
+                    height: 145,
                     decoration: BoxDecoration(
                       color: AppColors.ReminderBox,
                       borderRadius: const BorderRadius.only(
@@ -459,91 +459,125 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
                               height: 50,
                               decoration: BoxDecoration(
                                 color: const Color(0xFFFFF5F5),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15),
+                                ),
                               ),
                               child: const Center(
                                 child: Text(
-                                  "Holla Amigo:)",
+                                  "Medicine Time",
                                   style: TextStyle(
-                                    fontSize: 24,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10),
-                            Container(
-                              width: 180,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFF5F5),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  "paracetamol",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.black54,
+                            const SizedBox(height: 1),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              //mainAxisSize: MainAxisSize.min, // Ensures Row doesn't take full width
+                              children: [
+                                // Circular pill icon container
+                                Container(
+                                  width: 70,
+                                  height: 70,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFE2E0F0),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: const Color(0xFFFFF5F5),
+                                      width: 6,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Image.asset(
+                                      'lib/imagesOrlogo/pill.png',
+                                      width: 40,
+                                      height: 40,
+                                    ),
                                   ),
                                 ),
-                              ),
+
+                                // Medicine name container (Attached to the pill icon)
+                                Container(
+                                  width: 180,
+                                  height: 30,
+                                  
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFFFF5F5),
+                                    borderRadius: const BorderRadius.only(
+                                      topRight: Radius.circular(8),
+                                      bottomRight: Radius.circular(8),
+                                      topLeft: Radius.circular(8),
+                                      bottomLeft: Radius.circular(8),
+                                    ),
+                                  ),
+                                  child: const Center(
+                                    child: Text(
+                                      "Paracetamol",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(width: 10), // Space between name box & check button
+
+                                // Check button container
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _isCompleted = !_isCompleted;
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFE2E0F0),
+                                      shape: BoxShape.circle,
+                                      // border: Border.all(
+                                      //   color: const Color(0xFFFFF5F5),
+                                      //   width: 6,
+                                      // ),
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.check_circle,
+                                        color: _isCompleted ? Colors.green : Colors.grey,
+                                        size: 40,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
+
+                            const SizedBox(height: 20),
                           ],
                         ),
-
-                        // Left Icon (Pill)
-                        Positioned(
-                          left: 20,
-                          child: Container(
-                            width: 75,
-                            height: 75,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFE2E0F0),
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: const Color(0xFFFFF5F5),
-                                width: 6,
-                              ),
-                            ),
-                            child: Center(
-                              child: Image.asset(
-                                'lib/imagesOrlogo/pill.png',
-                                width: 50,
-                                height: 50,
+                        // Good job text
+                        if (_isCompleted)
+                          Positioned(
+                            bottom: 10,
+                            child: const Text(
+                              "Good job!",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
                               ),
                             ),
                           ),
-                        ),
-
-                        // Right Icon (Checkmark)
-                        Positioned(
-                          right: 20,
-                          child: Container(
-                            width: 75,
-                            height: 75,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFE2E0F0),
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: const Color(0xFFFFF5F5),
-                                width: 6,
-                              ),
-                            ),
-                            child: Center(
-                              child: Image.asset(
-                                'lib/imagesOrlogo/Done.png',
-                                width: 50,
-                                height: 50,
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -564,7 +598,7 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
                         ),
                         child: Container(
                           width: 100,
-                          height: 114,
+                          height: 120,
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: Color(0xFFFFF5F5), 
@@ -615,7 +649,7 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
                         ),
                         child: Container(
                           width: 100,
-                          height: 114,
+                          height: 120,
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: Color(0xFFFFF5F5),
@@ -666,7 +700,7 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
                         ),
                         child: Container(
                           width: 100,
-                          height: 114,
+                          height: 120,
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: Color(0xFFFFF5F5), 
@@ -687,7 +721,7 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "Entertainment",
+                                "Fun Activities",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 15,
@@ -922,7 +956,7 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
               Align(
                 alignment: Alignment.bottomRight,
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 20, bottom: 70),
+                  padding: const EdgeInsets.only(right: 20, bottom: 30),
                   child: IconButton(
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatPage()));
