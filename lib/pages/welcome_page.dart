@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gsc_project/main.dart';
 import 'package:gsc_project/pages/new_Account.dart';
 import 'package:gsc_project/pages/login_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import '../services/auth_service.dart';
 void main() {
@@ -49,30 +50,166 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: Container(
+        color: Color(0xFFD4859E), // Solid pink background
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to Page 1
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NewAccountPage()),
-                );
-              },
-              child: Text('Create New Account'),
+            // Logo Container
+            Padding(
+              padding: const EdgeInsets.only(top: 60, bottom: 20),
+              child: Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  color: Color(0xFFD4859E),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Image.asset(
+                    'lib/imagesOrlogo/ZindagiGo_logo.png',
+                    width: 200,
+                    height: 200,
+                  ),
+                ),
+              ),
             ),
-            SizedBox(height: 20), // Add some spacing between buttons
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to Page 2
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
-              },
-              child: Text('Login to Existing Account'),
+
+            // Bottom Container
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Color(0xFFFFF5F5),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
+                  ),
+                  border: Border(
+                    top: BorderSide(
+                      color: Color(0xFF594087),
+                      width: 5,
+                    ),
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Welcome Text
+                    Text(
+                      'Welcome',
+                      style: TextStyle(
+                        color: Color(0xFF444444),
+                        fontFamily: 'Poppins',
+                        fontSize: 32,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+
+                    Text(
+                      'to',
+                      style: TextStyle(
+                        color: Color(0xFF444444),
+                        fontFamily: 'Poppins',
+                        fontSize: 32,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+
+                    SizedBox(height: 20),
+
+                    // Zindagi Go Text
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Zindagi ',
+                            style: GoogleFonts.caveat(
+                              fontSize: 40,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 2,
+                              color: Colors.black,
+                            ),
+                          ),
+                          TextSpan(
+                            text: 'Go!',
+                            style: GoogleFonts.nunito(
+                              color: Color(0xFF5A4087),
+                              fontSize: 42,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    // Subtitle
+                    Text(
+                      'Because Life Doesn\'t Pause with Age',
+                      style: GoogleFonts.caveat(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 1.3,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 50),
+
+                    // Login and Signup Buttons
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 70),
+                      child: Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => LoginPage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF4A4191), // Deep purple
+                              minimumSize: Size(double.infinity, 50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            child: Text(
+                              'Login',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => NewAccountPage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF4A4191), // Deep purple
+                              minimumSize: Size(double.infinity, 50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            child: Text(
+                              'Signup',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
