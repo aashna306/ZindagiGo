@@ -5,6 +5,7 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:image_picker/image_picker.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'dart:io';
+import 'package:gsc_project/colors/app_colors.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -119,6 +120,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.HomePageColor,
       appBar: AppBar(title: Text("Chatbot")),
       body: Column(
         children: [
