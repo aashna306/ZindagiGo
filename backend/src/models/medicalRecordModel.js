@@ -5,7 +5,7 @@ const medicalRecordSchema = new mongoose.Schema(
     firebaseUID: {
       type: String,
       required: true,
-      index: true,
+      index: true, 
     },
     title: {
       type: String,
@@ -17,16 +17,16 @@ const medicalRecordSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      required: true,
+      efault: 'uncategorized',
       enum: [
-        allergies,
-        prescription,
-        medical_history,
-        hospitalzations,
-        vaccinations,
-        procedure,
-        test_reports,
-        doctor_Contact
+        'Allergies',
+        'Prescriptions',
+        'Medical History',
+        'Hospitalizations', 
+        'Vaccinations',
+        'Procedures',
+        'Test Reports',
+        'Dr s Contacts', 
       ],
     },
     processedText: {
