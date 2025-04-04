@@ -10,11 +10,13 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
+  console.log('Received file with mimetype:', file.mimetype);
   if (
     file.mimetype.startsWith('image/') ||
     file.mimetype === 'application/pdf' ||
     file.mimetype === 'application/msword' ||
-    file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'||
+    file.mimetype === 'application/octet-stream' 
   ) {
     cb(null, true);
   } else {
@@ -31,18 +33,20 @@ const upload = multer({
 async function categorizeText(text) {
   try {
     const prompt = `
+    You are a medical assistant AI.
+
     Categorize the following medical record text into one of these categories:
-    - allergies
-    - prescription
-    - medical_history
-    - hospitalzations
-    - vaccinations
-    - procedure
-    - test_reports
-    - doctor_Contact
+    - Allergies
+    - Prescriptions
+    - Medical History
+    - Hospitalizations
+    - Vaccinations
+    - Procedures
+    - Test Reports
+    - Dr s Contacts
     
     Respond with ONLY the category name, nothing else. Make sure to choose the best option out of these which fits.
-    
+    Only respond with the **category name**, in lowercase, and nothing else — no explanations.
     Medical record text:
     ${text}
     `;
@@ -52,24 +56,24 @@ async function categorizeText(text) {
     const rawCategory = await response.text();
 
     const validCategories = [
-      'allergies',
-      'prescription',
-      'medical_history',
-      'hospitalzations',
-      'vaccinations',
-      'procedure',
-      'test_reports',
-      'doctor_Contact'
+      'Allergies',
+        'Prescriptions',
+        'Medical History',
+        'Hospitalizations', 
+        'Vaccinations',
+        'Procedures',
+        'Test Reports',
+        'Dr s Contacts',
     ];
 
     const category = validCategories.find((cat) =>
       rawCategory.toLowerCase().includes(cat)
     );
 
-    return category || 'medical_history';
+    return category || 'Medical History';
   } catch (error) {
     console.error('Error categorizing text:', error);
-    return 'medical_history';
+    return 'Medical History';
   }
 }
 
@@ -162,7 +166,7 @@ exports.getMedicalRecords = [
       let query = { firebaseUID };
 
       if (category) {
-        query.category = category;
+        query.category = new RegExp('^' + category + '$', 'i'); //case-insensitive
       }
 
       const records = await MedicalRecord.find(query).sort({ createdAt: -1 });
