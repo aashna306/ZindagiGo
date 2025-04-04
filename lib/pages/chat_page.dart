@@ -32,7 +32,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> sendMessage(String userMessage) async {
     final response = await http.post(
-      Uri.parse('http://172.20.10.2:3000/api/chat'),
+      Uri.parse('http://10.0.2.2:3000/api/chat'),
       //in the place of 10.0.2.2  give your ipconfig(run ipconfig in cmd and copy ipv4 ) if you want to run this on real device
       // 10.0.2.2  this is for emulator
       // also remember that your pc and device must be connected with same wifi
