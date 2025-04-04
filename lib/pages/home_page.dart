@@ -31,12 +31,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-
+bool _isCompleted=false;
   double threshold = 15.0; // G-force threshold for fall detection
   int inactivityTime = 5; // Time of inactivity after fall
   bool hasFallen = false;
   Timer? inactivityTimer;
-  String emergencyNumber = "";//your emergency number 
+  String emergencyNumber = "+916397187590";//your emergency number 
   final stt.SpeechToText _speech = stt.SpeechToText();
   bool _isListening = false;
   final MethodChannel platform = MethodChannel('com.example.gsc_project/call');
@@ -69,6 +69,8 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
     Permission.sensors,
     Permission.phone,
     Permission.microphone,
+    Permission.camera,
+    Permission.photos,
   ].request();
 
   if (statuses[Permission.phone]!.isDenied) {
@@ -155,7 +157,7 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
   
   void _makeCall() async {
      try {
-    await platform.invokeMethod('makeCall', {'phoneNumber': ''});
+    await platform.invokeMethod('makeCall', {'phoneNumber': '+916397187590'});
   } on PlatformException catch (e) {
     print("Failed to make call: '${e.message}'.");
   }
@@ -585,7 +587,7 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const MedicalRecords()),
+                            MaterialPageRoute(builder: (context) =>  MedicalRecords()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
