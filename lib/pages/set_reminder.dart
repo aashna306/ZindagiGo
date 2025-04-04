@@ -361,7 +361,7 @@ class _SetReminderPageState extends State<SetReminderPage> {
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2101),
                   );
-                  if (pickedDate != null) {
+                  if(pickedDate != null){
                     setState(() {
                       _selectedDate = pickedDate;
                     });
