@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gsc_project/colors/app_colors.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+// import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'CategoryRecordsPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,8 +25,77 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MedicalRecords extends StatelessWidget {
+class MedicalRecords extends StatefulWidget {
   const MedicalRecords({super.key});
+
+  @override
+  _MedicalRecordsState createState() => _MedicalRecordsState();
+}
+
+class _MedicalRecordsState extends State<MedicalRecords> {
+  bool _isUploading = false;
+  Future<void> pickExtractAndUpload() async {
+
+
+    try {
+      setState(() => _isUploading = true);
+
+      // Step 1: Pick Image
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 80,);
+      if (pickedFile == null) {
+        setState(() => _isUploading = false);
+        return;
+      }
+      final imageFile = File(pickedFile.path);
+      print("Picked file: ${pickedFile.path}");  // 👈 See if it's really .png
+
+      // Step 2: Extract Text using ML Kit
+      final inputImage = InputImage.fromFilePath(pickedFile.path);
+     final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+
+      final RecognizedText recognizedText =
+          await textRecognizer.processImage(inputImage);
+      final extractedText = recognizedText.text;
+      await textRecognizer.close();
+
+      // Step 3: Upload to backend
+      final user = FirebaseAuth.instance.currentUser;
+      final idToken = await user?.getIdToken();
+      final firebaseUID = user?.uid ?? '';
+      var request = http.MultipartRequest(
+        "POST",
+        Uri.parse("http://10.10.226.179:3000/api/medical-records/upload"),
+       
+          //in the place of 10.10.226.179   give your ipconfig(run ipconfig in cmd and copy ipv4 ) if you want to run this on real device
+        // 10.0.2.2  this is for emulator
+        // also remember that your pc and device must be connected with same wifi
+        // Use localhost for emulator
+        // Replace with your server URL
+      )
+        ..headers['Authorization'] = 'Bearer $idToken'
+        ..fields['firebaseUID'] = firebaseUID
+        ..fields['title'] = "Uploaded Record"
+        ..fields['processedText'] = extractedText
+        ..fields['fileType'] = 'image'
+        ..files.add(await http.MultipartFile.fromPath('file', imageFile.path));
+
+      final response = await request.send();
+      setState(() => _isUploading = false);
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Upload successful")));
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Upload failed")));
+      }
+    } catch (e) {
+      setState(() => _isUploading = false);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error: $e")));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -241,7 +319,7 @@ class MedicalRecords extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 40,
-                      backgroundImage: AssetImage('lib/imagesOrlogo/user.png'),
+                      backgroundImage: AssetImage('lib/imagesOrlogo/CompleteProfile.png'),
                     ),
                     const SizedBox(width: 16),
                     Column(
@@ -254,8 +332,20 @@ class MedicalRecords extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text("Gender: Male    Age: 80"),
-                        Text("Weight: 72 Kg    Blood Type: AB+"),
+                        Text(
+                          "Gender: Male    Age: 80",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text(
+                          "Weight: 72 Kg ",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black,
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -272,9 +362,21 @@ class MedicalRecords extends StatelessWidget {
                   ),
                 ),
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Upload action
-                  },
+                  // onPressed: () {
+                  // Upload action
+                  onPressed: _isUploading
+                      ? null
+                      : () async {
+                          setState(() {
+                            _isUploading = true;
+                          });
+
+                          await pickExtractAndUpload();
+
+                          setState(() {
+                            _isUploading = false;
+                          });
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.Upload,
                     shape: RoundedRectangleBorder(
@@ -325,11 +427,16 @@ class MedicalRecords extends StatelessWidget {
     );
   }
 
-   Widget _buildGridButton(String title, IconData icon) {
+  Widget _buildGridButton(String title, IconData icon) {
     return ElevatedButton(
       onPressed: () {
-        // Button action
-      },
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => CategoryRecordsPage(category: title),
+    ),
+  );
+},
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.pink,
         shape: RoundedRectangleBorder(
