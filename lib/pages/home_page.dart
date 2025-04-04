@@ -36,7 +36,7 @@ bool _isCompleted=false;
   int inactivityTime = 5; // Time of inactivity after fall
   bool hasFallen = false;
   Timer? inactivityTimer;
-  String emergencyNumber = "+916397187590";//your emergency number 
+  String emergencyNumber = "+91";//your emergency number 
   final stt.SpeechToText _speech = stt.SpeechToText();
   bool _isListening = false;
   final MethodChannel platform = MethodChannel('com.example.gsc_project/call');
@@ -157,7 +157,7 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
   
   void _makeCall() async {
      try {
-    await platform.invokeMethod('makeCall', {'phoneNumber': '+916397187590'});
+    await platform.invokeMethod('makeCall', {'phoneNumber': '+91'});// put your emergency number
   } on PlatformException catch (e) {
     print("Failed to make call: '${e.message}'.");
   }
