@@ -47,38 +47,38 @@ class _WelcomePageState extends State<WelcomePage> {
     }
   }
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Color(0xFFD4859E), // Solid pink background
-        child: Column(
-          children: [
-            // Logo Container
-            Padding(
-              padding: const EdgeInsets.only(top: 60, bottom: 20),
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  color: Color(0xFFD4859E),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Image.asset(
-                    'lib/imagesOrlogo/ZindagiGo_logo.png',
-                    width: 200,
-                    height: 200,
+      body: SingleChildScrollView(
+        child: Container(
+          color: const Color(0xFFD4859E), // Solid pink background
+          child: Column(
+            children: [
+              // Logo Container
+              Padding(
+                padding: const EdgeInsets.only(top: 60, bottom: 20),
+                child: Container(
+                  width: 300,
+                  height: 300,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFD4859E),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Image.asset(
+                      'lib/imagesOrlogo/ZindagiGo_logo.png',
+                      width: 200,
+                      height: 200,
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            // Bottom Container
-            Expanded(
-              child: Container(
+              // Bottom Container
+              Container(
                 width: double.infinity,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color(0xFFFFF5F5),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(40),
@@ -95,7 +95,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Welcome Text
-                    Text(
+                    const Text(
                       'Welcome',
                       style: TextStyle(
                         color: Color(0xFF444444),
@@ -104,8 +104,7 @@ class _WelcomePageState extends State<WelcomePage> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-
-                    Text(
+                    const Text(
                       'to',
                       style: TextStyle(
                         color: Color(0xFF444444),
@@ -114,8 +113,7 @@ class _WelcomePageState extends State<WelcomePage> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
                     // Zindagi Go Text
                     RichText(
@@ -141,7 +139,8 @@ class _WelcomePageState extends State<WelcomePage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
+
                     // Subtitle
                     Text(
                       'Because Life Doesn\'t Pause with Age',
@@ -152,7 +151,7 @@ class _WelcomePageState extends State<WelcomePage> {
                         color: Colors.black,
                       ),
                     ),
-                    SizedBox(height: 50),
+                    const SizedBox(height: 50),
 
                     // Login and Signup Buttons
                     Padding(
@@ -163,17 +162,18 @@ class _WelcomePageState extends State<WelcomePage> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => LoginPage()),
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginPage()),
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF4A4191), // Deep purple
-                              minimumSize: Size(double.infinity, 50),
+                              backgroundColor: const Color(0xFF4A4191), // Deep purple
+                              minimumSize: const Size(double.infinity, 50),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               'Login',
                               style: TextStyle(
                                 color: Colors.white,
@@ -181,22 +181,23 @@ class _WelcomePageState extends State<WelcomePage> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 15),
+                          const SizedBox(height: 15),
                           ElevatedButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => NewAccountPage()),
+                                MaterialPageRoute(
+                                    builder: (context) => const NewAccountPage()),
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF4A4191), // Deep purple
-                              minimumSize: Size(double.infinity, 50),
+                              backgroundColor: const Color(0xFF4A4191), // Deep purple
+                              minimumSize: const Size(double.infinity, 50),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               'Signup',
                               style: TextStyle(
                                 color: Colors.white,
@@ -210,8 +211,8 @@ class _WelcomePageState extends State<WelcomePage> {
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
