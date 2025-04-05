@@ -86,6 +86,53 @@ flutter run
 
 ---
 
+🔴 Emergency Number (SOS Feature) and Fall Detection
+To safely test the SOS feature and fall detection without any error , change the emergency number in the codebase:
+navigate to :
+lib/home_page.dart
+change the line at 39 and at 160  with your emergency number, you can also change country code....
+=> String emergencyNumber = "+91";
+
+
+While in an ideal production setup, the emergency number should be stored and fetched securely from the backend for flexibility and ease of updates, we have intentionally avoided this approach during the testing phase, for the following reason......
+Controlled Testing Environment
+By hardcoding the emergency number in the app, we ensure that only trusted developers or testers can modify it deliberately in the code.
+This creates a controlled environment, where testing of the SOS and fall detection features happens safely without triggering unintended or fake emergency calls.
+Since our codebase and builds are currently shared with testers and contributors, hardcoding sensitive functionalities like the emergency number helps prevent backend exploitation.
+
+----
+
+🔐OTP Verification (login)
+For the purpose of testing and demonstration, we have configured Firebase Authentication to use a test phone number and OTP
+Test Phone Number: +91 1234567890
+Test OTP: 111111
+
+Reason for This Approach:
+Firebase Free Tier Limitations
+Firebase does not offer unlimited free SMS verifications. During development and testing, using real phone numbers could quickly exhaust the free quota.
+Test numbers allow us to bypass actual SMS sending, ensuring cost-free and unlimited testing.
+
+Avoiding Spam and Abuse
+If we used real-time OTPs with dynamic phone numbers, there’s a risk of misuse or accidental spam to genuine phone numbers.
+Test numbers eliminate this risk by providing a controlled environment.
+
+Safe and Reliable Testing
+Using test credentials ensures that all testers and developers can log in without needing real phone numbers.
+This provides a consistent testing experience across devices and environments.
+
+
+-----
+
+Medical Records Upload & Category Detection
+Our app allows users to upload their medical records (prescriptions, reports, etc.) and automatically detects the category of the record using AI-based OCR and categorization logic.
+For Testers:
+You can upload any sample image of a medical prescription or report.
+The app will process the image using OCR and display the extracted text.
+Based on the text, the app will attempt to categorize the record.
+
+-----
+
+
 ##  Deployment
 For MVP submission, you can:
 - Generate APK:
@@ -105,7 +152,7 @@ To ensure background services run properly, please disable battery optimization 
 
 (Steps may vary by device. Check your phone’s settings for more details.)
 
-- Chat & User Info Configuration:
+- Chat, User Info and medical records Configuration:
   - Ensure that your IPv4 address is correctly set for backend communication when testing chat and user details.
   - If testing on an emulator, provide the emulator’s assigned **IPv4 address.
   - Recommended: Test on a real device connected to the same WiFi network as the backend server for full feature access.
@@ -121,7 +168,7 @@ To ensure background services run properly, please disable battery optimization 
    - Ensure Firebase Auth is enabled and google-services.json is correctly placed in android/app/.
 2. Backend Connection Issues  
    - Verify that MongoDB is running and that your backend is connected.
-   - Double-check the IPv4 address configuration in the UserInfoPage and ChatPage.
+   - Double-check the IPv4 address configuration in the UserInfoPage medical records page and ChatPage.
 3. Notifications Not Working  
    - Enable notifications in Firebase and check that the app has notification permissions.
 4. Location Sharing Not Working  
