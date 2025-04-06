@@ -218,7 +218,7 @@ To ensure background services run properly, please disable battery optimization 
 
 ## 📞 Contact
 For any queries, feel free to reach out:
-📧 Email: erlakshitanitj@gmail.com 
+📧 Email: zindagigoapp@gmail.com
 
 ---
 
