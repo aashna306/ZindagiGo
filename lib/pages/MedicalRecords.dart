@@ -7,7 +7,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'CategoryRecordsPage.dart';
 
 void main() {
@@ -65,7 +65,7 @@ class _MedicalRecordsState extends State<MedicalRecords> {
       final firebaseUID = user?.uid ?? '';
       var request = http.MultipartRequest(
         "POST",
-        Uri.parse("http://10.10.226.179:3000/api/medical-records/upload"),
+        Uri.parse("https://zindagigo.onrender.com/api/medical-records/upload"),
        
           //in the place of 10.10.226.179   give your ipconfig(run ipconfig in cmd and copy ipv4 ) if you want to run this on real device
         // 10.0.2.2  this is for emulator
