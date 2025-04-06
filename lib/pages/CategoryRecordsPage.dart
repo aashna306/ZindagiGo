@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gsc_project/colors/app_colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:io';
+// import 'dart:io';
 import 'dart:convert';
 
 class CategoryRecordsPage extends StatefulWidget {
@@ -20,7 +20,7 @@ class _CategoryRecordsPageState extends State<CategoryRecordsPage> {
     try{
     final user = FirebaseAuth.instance.currentUser;
     final idToken = await user?.getIdToken();
-    final uri = Uri.parse("http://10.10.226.179:3000/api/medical-records?category=${widget.category}");
+    final uri = Uri.parse("https://zindagigo.onrender.com/api/medical-records?category=${widget.category}");
 
       //in the place of 10.10.226.179  give your ipconfig(run ipconfig in cmd and copy ipv4 ) if you want to run this on real device
         // 10.0.2.2  this is for emulator
