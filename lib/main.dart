@@ -8,8 +8,6 @@ import 'package:gsc_project/pages/userInfo.dart';
 import 'pages/splash_screen.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'dart:async';
-import 'package:android_intent_plus/android_intent.dart';
-import 'package:android_intent_plus/flag.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -21,15 +19,20 @@ void main() async {
   );
   await checkAndRequestBatteryOptimization();
   await initializeBackgroundService();
+    final service = FlutterBackgroundService();
+  bool isRunning = await service.isRunning();
+  if (!isRunning) {
+    service.startService();
+  }
+
   runApp(const MyApp());
 }
 
 Future<void> checkAndRequestBatteryOptimization() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool? isBatteryOptimizationDisabled =
-      prefs.getBool('battery_optimization_disabled');
+  bool? isBatteryOptimizationDisabled =prefs.getBool('battery_optimization_disabled');
 
-  if (isBatteryOptimizationDisabled == null || !isBatteryOptimizationDisabled) {
+  if (!(isBatteryOptimizationDisabled ?? false)) {
     AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
     if (androidInfo.version.sdkInt >= 23) {
       // Check if the Android version supports battery optimization
@@ -77,17 +80,24 @@ Future<void> initializeBackgroundService() async {
 
 // Background service function
 FutureOr<bool> _onBackgroundServiceStart(ServiceInstance service) async {
-  if (service is AndroidServiceInstance) {
-    service.setAsForegroundService();
+  // if (service is AndroidServiceInstance) {
+  //   service.setAsForegroundService();
 
+  //   service.setForegroundNotificationInfo(
+  //     title: "Fall Detection Active",
+  //     content: "Monitoring falls...",
+  //   );
+  // }
+
+ if (service is AndroidServiceInstance) {
     service.setForegroundNotificationInfo(
-      title: "Fall Detection Active",
-      content: "Monitoring falls...",
+      title: "Zindagi Go - Fall Detection Active",
+      content: "Monitoring your safety in the background.",
     );
   }
 
   // Periodically update the notification
-  Timer.periodic(const Duration(seconds: 1), (timer) {
+  Timer.periodic(const Duration(seconds: 20), (timer) {
     if (service is AndroidServiceInstance) {
       service.setForegroundNotificationInfo(
         title: "Running in Background",
