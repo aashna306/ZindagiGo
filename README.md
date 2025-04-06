@@ -192,13 +192,12 @@ To ensure background services run properly, please disable battery optimization 
 
 ---
 
-##  Future Scope
-- AI-Powered Fall Detection - Improve fall detection accuracy using AI.
+##  Next Milestone
+- Collaboration with organisations for senior citizens - for easy caretaking and management through app.
 - Smartwatch Integration - Expand accessibility with wearable devices.
 - Enhanced Accessibility - Voice guidance for visually impaired users.
 - Offline Mode - Enable basic features without an internet connection.
   
-
 ---
 
 ##  Demo Video
@@ -212,9 +211,9 @@ To ensure background services run properly, please disable battery optimization 
 ---
 
 ## 👥 Contributors
-- Team Members- Arpita Goel
-                Lakshita Gupta 
-                Aashna Sharma
+- Team Members- Arpita Goel,
+                Lakshita Gupta,
+                Aashna Sharma,
                 Vyomika
 
 ---
