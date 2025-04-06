@@ -115,7 +115,7 @@ navigate to :
 
 lib/home_page.dart
 
-change the line at 39 and at 160  with your emergency number, you can also change country code....
+change the line at 39 and at 160  with your emergency number, you can also change country code
 => String emergencyNumber = "+91";
 
 
@@ -169,22 +169,13 @@ For MVP submission, you can:
 
 ---
 
-##  Additional Setup for Testing
-- Battery Optimization
+
+## Battery Optimization
 To ensure background services run properly, please disable battery optimization for this app
 1. Go to Settings > Battery & Performance
 2. Select Battery Optimization
 3. Find "Zindagi Go" and set it to "Don't optimize"
 
-(Steps may vary by device. Check your phone’s settings for more details.)
-
-- Chat, User Info and medical records Configuration:
-  - Ensure that your IPv4 address is correctly set for backend communication when testing chat and user details.
-  - If testing on an emulator, provide the emulator’s assigned **IPv4 address.
-  - Recommended: Test on a real device connected to the same WiFi network as the backend server for full feature access.
-  
-- Emergency Contact Setup:
-  - Open HomePage in the code and manually set an emergency contact number to test fall detection and SOS feature.
 
 ---
 
