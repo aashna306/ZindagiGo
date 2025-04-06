@@ -29,7 +29,7 @@ class UserInfoPage extends StatelessWidget {
       }
 
       final url = Uri.parse(
-        "http://10.10.226.164/api/users/saveUser"); 
+        "https://zindagigo.onrender.com/api/users/saveUser"); 
         // 10.10.226.164
         //in the place of 10.0.2.2  give your ipconfig(run ipconfig in cmd and copy ipv4 ) if you want to run this on real device
         // 10.0.2.2  this is for emulator
