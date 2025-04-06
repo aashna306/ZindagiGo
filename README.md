@@ -197,20 +197,17 @@ To ensure background services run properly, please disable battery optimization 
 - Smartwatch Integration - Expand accessibility with wearable devices.
 - Enhanced Accessibility - Voice guidance for visually impaired users.
 - Offline Mode - Enable basic features without an internet connection.
+  
 
 ---
 
 ##  Demo Video
-[🔗 Watch the Demo](https://your-demo-link.com)
+[🔗 Watch the Demo](https://youtu.be/x6FV2Lsp5w0)
 
 ---
 
-##  Deployment
-For MVP submission, you can:
-- Generate APK:
-  flutter build apk --release
-  
-- Upload APK to Google Drive and share a public link: [🔗 Download APK](YOUR_GOOGLE_DRIVE_LINK_HERE)
+##  MVP link
+ [🔗 Download APK](https://drive.google.com/drive/folders/1IeptxeWMiKFt-LKFsUkSzY7Hls4pXYun?usp=sharing)
 
 ---
 
