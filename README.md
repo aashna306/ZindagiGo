@@ -115,7 +115,7 @@ flutter run
 
 ---
 
-🔴 Emergency Number (SOS Feature) and Fall Detection
+## Emergency Number (SOS Feature) and Fall Detection
 To safely test the SOS feature and fall detection without any error , change the emergency number in the codebase:
 navigate to :
 lib/home_page.dart
@@ -131,7 +131,7 @@ Since our codebase and builds are currently shared with testers and contributors
 
 ----
 
-🔐OTP Verification (login)
+## OTP Verification (login)
 For the purpose of testing and demonstration, we have configured Firebase Authentication to use a test phone number and OTP
 Test Phone Number: +91 1234567890
 Test OTP: 111111
@@ -151,16 +151,6 @@ This provides a consistent testing experience across devices and environments.
 
 
 -----
-
-Medical Records Upload & Category Detection
-Our app allows users to upload their medical records (prescriptions, reports, etc.) and automatically detects the category of the record using AI-based OCR and categorization logic.
-For Testers:
-You can upload any sample image of a medical prescription or report.
-The app will process the image using OCR and display the extracted text.
-Based on the text, the app will attempt to categorize the record.
-
------
-
 
 ##  Deployment
 For MVP submission, you can:
