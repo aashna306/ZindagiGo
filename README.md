@@ -65,13 +65,11 @@ Track your daily steps and sleep cycle, with exercise recommendations based on y
 - Install Node.js and run the backend server.
 
 ### Clone the Repository
-bash
-git clone https://github.com/arpita-goel/Gsc_Project1.git
-cd Gsc_Project1
+git clone https://github.com/arpita-goel/ZindagiGo.git
+cd ZindagiGo
 
 
 ### Install Dependencies
-bash
 flutter pub get
 
 
@@ -90,7 +88,6 @@ flutter pub get
   
 
 ### Run the App
-bash
 flutter run
 
 
@@ -100,15 +97,12 @@ flutter run
 ### Prerequisites
 - Ensure you have Node.js installed.
 - Navigate to the backend directory:
-  bash
   cd backend/src
   
 - Install dependencies:
-  bash
   npm install
   
 - Start the backend server:
-  bash
   npm start
   
 - Ensure the backend is running before launching the Flutter app.
@@ -118,35 +112,49 @@ flutter run
 ## Emergency Number (SOS Feature) and Fall Detection
 To safely test the SOS feature and fall detection without any error , change the emergency number in the codebase:
 navigate to :
+
 lib/home_page.dart
+
 change the line at 39 and at 160  with your emergency number, you can also change country code....
 => String emergencyNumber = "+91";
 
 
 While in an ideal production setup, the emergency number should be stored and fetched securely from the backend for flexibility and ease of updates, we have intentionally avoided this approach during the testing phase, for the following reason......
+
 Controlled Testing Environment
+
 By hardcoding the emergency number in the app, we ensure that only trusted developers or testers can modify it deliberately in the code.
+
 This creates a controlled environment, where testing of the SOS and fall detection features happens safely without triggering unintended or fake emergency calls.
+
 Since our codebase and builds are currently shared with testers and contributors, hardcoding sensitive functionalities like the emergency number helps prevent backend exploitation.
 
 ----
 
 ## OTP Verification (login)
 For the purpose of testing and demonstration, we have configured Firebase Authentication to use a test phone number and OTP
+
 Test Phone Number: +91 1234567890
+
 Test OTP: 111111
 
 Reason for This Approach:
+
 Firebase Free Tier Limitations
+
 Firebase does not offer unlimited free SMS verifications. During development and testing, using real phone numbers could quickly exhaust the free quota.
+
 Test numbers allow us to bypass actual SMS sending, ensuring cost-free and unlimited testing.
 
 Avoiding Spam and Abuse
 If we used real-time OTPs with dynamic phone numbers, there’s a risk of misuse or accidental spam to genuine phone numbers.
+
 Test numbers eliminate this risk by providing a controlled environment.
 
 Safe and Reliable Testing
+
 Using test credentials ensures that all testers and developers can log in without needing real phone numbers.
+
 This provides a consistent testing experience across devices and environments.
 
 
@@ -155,7 +163,6 @@ This provides a consistent testing experience across devices and environments.
 ##  Deployment
 For MVP submission, you can:
 - Generate APK:
-  bash
   flutter build apk --release
   
 - Upload APK to Google Drive and share a public link: [🔗 Download APK](YOUR_GOOGLE_DRIVE_LINK_HERE)
