@@ -1,7 +1,8 @@
 # ZindagiGo- Because Life Doesn't Pause With Age
 
 ##  About our app
-ZindagiGo is a mobile application designed to assist elderly individuals by providing essential health-related features such as voice-activated SOS, **OCR-based prescription assistance, **reminders for medications and pensions, and **real-time notifications. The app ensures ease of use with a simple UI tailored for elderly users.
+Independence with a safety net—that's the Zindagi Go promise. This thoughtfully designed companion app empowers seniors to navigate modern life with confidence while keeping loved ones connected in moments that matter. From health management to entertainment, everything seniors need rests in the palm of their hand, wrapped in an interface that respects their wisdom and preserves their dignity.
+Zindagi Go: Where care meets independence, and golden years truly shine.
 
 ---
 
