@@ -160,22 +160,21 @@ This provides a consistent testing experience across devices and environments.
 
 -----
 
-##  Deployment
-For MVP submission, you can:
-- Generate APK:
-  flutter build apk --release
-  
-- Upload APK to Google Drive and share a public link: [🔗 Download APK](YOUR_GOOGLE_DRIVE_LINK_HERE)
-
----
-
-
 ## Battery Optimization
 To ensure background services run properly, please disable battery optimization for this app
 1. Go to Settings > Battery & Performance
 2. Select Battery Optimization
 3. Find "Zindagi Go" and set it to "Don't optimize"
 
+
+---
+
+
+##  Permissions Required
+- Camera & Storage - Required for OCR-based prescription scanning.
+- Microphone - Needed for voice-activated SOS feature.
+- Location - Required for live location sharing with emergency contacts.
+- Notification Access - Enables reminders for medications and pensions.
 
 ---
 
@@ -193,25 +192,6 @@ To ensure background services run properly, please disable battery optimization 
 
 ---
 
-##  Permissions Required
-- Camera & Storage - Required for OCR-based prescription scanning.
-- Microphone - Needed for voice-activated SOS feature.
-- Location - Required for live location sharing with emergency contacts.
-- Notification Access - Enables reminders for medications and pensions.
-
----
-
-##  How to Customize Zindagi Go
-- Change Emergency Contact:
-  - Open HomePage.dart and update the emergencyContact variable.
-- Modify Backend URL:
-  - Update the .env file with the correct PORT and MONGO_URI.
-- IPv4 Configuration:
-  - Ensure phone and laptop are connected to the same WiFi.
-  - Update IPv4 settings in UserInfoPage.dart and ChatPage.dart.
-
----
-
 ##  Future Scope
 - AI-Powered Fall Detection - Improve fall detection accuracy using AI.
 - Smartwatch Integration - Expand accessibility with wearable devices.
@@ -222,6 +202,15 @@ To ensure background services run properly, please disable battery optimization 
 
 ##  Demo Video
 [🔗 Watch the Demo](https://your-demo-link.com)
+
+---
+
+##  Deployment
+For MVP submission, you can:
+- Generate APK:
+  flutter build apk --release
+  
+- Upload APK to Google Drive and share a public link: [🔗 Download APK](YOUR_GOOGLE_DRIVE_LINK_HERE)
 
 ---
 
