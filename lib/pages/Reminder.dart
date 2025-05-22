@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gsc_project/colors/app_colors.dart';
+import 'package:gsc_project/pages/home_page.dart';
 import 'package:gsc_project/pages/set_reminder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
@@ -25,14 +28,50 @@ class ReminderPage extends StatefulWidget {
 }
 
 class _ReminderPageState extends State<ReminderPage> {
-  final List<Map<String, dynamic>> reminders = [
-    {"title": "title", "category": "Work", "isActive": true},
-    {"title": "make video on reminder app", "category": "Work", "isActive": false},
-    {"title": "Meeting", "category": "Work", "isActive": true},
-    {"title": "write article", "category": "Work", "isActive": false},
-    {"title": "having good time", "category": "Personal", "isActive": true},
-    {"title": "learning something new", "category": "Others", "isActive": true},
-  ];
+  final List<Map<String, dynamic>> reminders = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadReminders();
+  }
+
+  Future<void> saveReminders() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> encodedReminders =
+        reminders.map((reminder) => jsonEncode(reminder)).toList();
+    await prefs.setStringList('reminders', encodedReminders);
+  }
+
+  Future<void> loadReminders() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? encodedReminders = prefs.getStringList('reminders');
+
+    if (encodedReminders == null || encodedReminders.isEmpty) {
+      reminders.clear();
+      // First launch: add default reminders
+      reminders.addAll([
+        {"title": "title", "category": "Work", "isActive": true},
+        {"title": "write article", "category": "Work", "isActive": false},
+        ]);
+     await saveReminders(); 
+      setState(() {}); // Save default ones
+    } else {
+      setState(() {
+        reminders.clear();
+        reminders.addAll(encodedReminders
+            .map((e) => jsonDecode(e))
+            .cast<Map<String, dynamic>>());
+      });
+    }
+  }
+
+  void completeReminder(String title) {
+    setState(() {
+      reminders.removeWhere((reminder) => reminder['title'] == title);
+    });
+    saveReminders();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +186,15 @@ class _ReminderPageState extends State<ReminderPage> {
               title: const Text("Home"),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/homepage');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(
+                      payload: null,
+                      onCompleteReminder: completeReminder,
+                    ),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -257,6 +304,7 @@ class _ReminderPageState extends State<ReminderPage> {
                   setState(() {
                     reminders[index]['isActive'] = value;
                   });
+                  saveReminders();
                 },
               ),
             ),
@@ -264,11 +312,20 @@ class _ReminderPageState extends State<ReminderPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          // Navigate to SetReminderPage and wait for the result
+          final newReminder = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const SetReminderPage()),
           );
+
+          // If a new reminder is returned, add it to the list
+          if (newReminder != null) {
+            setState(() {
+              reminders.add(newReminder);
+            });
+            await saveReminders();
+          }
         },
         backgroundColor: AppColors.ButtonColor,
         child: const Icon(
