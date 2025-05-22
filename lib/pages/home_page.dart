@@ -23,14 +23,21 @@ import 'dart:math';
 
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+
+  static final GlobalKey<_HomePageState> globalKey =
+      GlobalKey<_HomePageState>();
+
+  final String? payload;
+   final Function(String)? onCompleteReminder;
+   HomePage({Key? key, this.payload,this.onCompleteReminder}) : super(key: globalKey);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-
+ String title = "Medicine time";
+   String description = "take your medicines";
 bool _isCompleted=false;
   double threshold = 15.0; // G-force threshold for fall detection
   int inactivityTime = 5; // Time of inactivity after fall
@@ -57,6 +64,9 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
   @override
   void initState() {
     super.initState();
+      if (widget.payload != null) {
+      updateFromPayload(widget.payload!);
+    }
     _requestPermissions();
     _startFallDetection();
     _startBackgroundService();
@@ -80,6 +90,17 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
     print("Microphone permission denied. Voice SOS may not work.");
   }
 }
+
+  
+void updateFromPayload(String payload) {
+    final parts = payload.split('|');
+    if (parts.length == 2) {
+      setState(() {
+        title = parts[0];
+        description = parts[1];
+      });
+    }
+  }
 
   // Start fall detection using accelerometer
   void _startFallDetection() async {
@@ -466,9 +487,9 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              child: const Center(
+                              child:  Center(
                                 child: Text(
-                                  "Medicine Time",
+                                  title,
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -517,9 +538,9 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
                                       bottomLeft: Radius.circular(8),
                                     ),
                                   ),
-                                  child: const Center(
+                                  child:  Center(
                                     child: Text(
-                                      "Paracetamol",
+                                      description,
                                       style: TextStyle(
                                         fontSize: 16,
                                         color: Colors.black,
@@ -532,10 +553,22 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
 
                                 // Check button container
                                 GestureDetector(
-                                  onTap: () {
+                                   onTap: () {
                                     setState(() {
                                       _isCompleted = !_isCompleted;
                                     });
+                                      final id = NotificationService.tappedNotificationId;
+                                      if (id != null) {
+                                      NotificationService.cancelNotification(id);
+                                       ScaffoldMessenger.of(context).showSnackBar(
+                                         SnackBar(content: Text('Task Completed')), );
+                                                      } 
+                                      else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('No More Tasks')),); }
+
+                                          widget.onCompleteReminder?.call(title);
+
                                   },
                                   child: Container(
                                     width: 40,
