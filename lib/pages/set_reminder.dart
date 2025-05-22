@@ -1,5 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:gsc_project/colors/app_colors.dart';
+import 'package:gsc_project/pages/notifications.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future<void> saveReminderToBackend({
+  required String title,
+  required String description,
+  required String category,
+  required DateTime dateTime,
+  required int snoozeDuration,
+}) async {
+  try {
+    final response = await http.post(
+      Uri.parse(
+          'http://192.168.64.187:3000/api/reminders'), // Replace with your backend URL
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'title': title,
+        'description': description,
+        'category': category,
+        'dateTime': dateTime.toIso8601String(),
+        'snoozeDuration': snoozeDuration,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Reminder saved successfully');
+    } else {
+      print('Failed to save reminder');
+    }
+  } catch (e) {
+    print('network error while saving : $e');
+  }
+}
 
 void main() {
   runApp(const MyApp());
@@ -24,6 +58,8 @@ class SetReminderPage extends StatefulWidget {
 }
 
 class _SetReminderPageState extends State<SetReminderPage> {
+  final TextEditingController _titleController = TextEditingController();
+
   final TextEditingController _descriptionController = TextEditingController();
   String _selectedCategory = 'Medicines';
   DateTime _selectedDate = DateTime.now();
@@ -239,15 +275,18 @@ class _SetReminderPageState extends State<SetReminderPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
+                controller: _titleController,
                 decoration: InputDecoration(
                   icon: const Icon(Icons.title, color: AppColors.lineColor),
                   labelText: "Add title",
                   labelStyle: const TextStyle(color: Colors.black54),
                   enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.lineColor, width: 2.0),
+                    borderSide:
+                        BorderSide(color: AppColors.lineColor, width: 2.0),
                   ),
                   focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.lineColor, width: 2.0),
+                    borderSide:
+                        BorderSide(color: AppColors.lineColor, width: 2.0),
                   ),
                 ),
               ),
@@ -361,11 +400,9 @@ class _SetReminderPageState extends State<SetReminderPage> {
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2101),
                   );
-                  if(pickedDate != null){
-                    setState(() {
-                      _selectedDate = pickedDate;
-                    });
-                  }
+                  setState(() {
+                    _selectedDate = pickedDate!;
+                  });
                 },
                 child: Container(
                   width: double.infinity,
@@ -376,7 +413,8 @@ class _SetReminderPageState extends State<SetReminderPage> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 16),
                       child: Text(
                         "${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}",
                         style: const TextStyle(
@@ -476,7 +514,8 @@ class _SetReminderPageState extends State<SetReminderPage> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 16),
                       child: Text(
                         _selectedTime.format(context),
                         style: const TextStyle(
@@ -543,8 +582,54 @@ class _SetReminderPageState extends State<SetReminderPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Add reminder action
+                  onPressed: () async {
+                    DateTime reminderDateTime = DateTime(
+                      _selectedDate.year,
+                      _selectedDate.month,
+                      _selectedDate.day,
+                      _selectedTime.hour,
+                      _selectedTime.minute,
+                    );
+
+                    // Create a new reminder object
+                    Map<String, dynamic> newReminder = {
+                      "title": _titleController.text,
+                      "description": _descriptionController.text,
+                      "category": _selectedCategory,
+                      "dateTime": DateTime(
+                        _selectedDate.year,
+                        _selectedDate.month,
+                        _selectedDate.day,
+                        _selectedTime.hour,
+                        _selectedTime.minute,
+                      ).toIso8601String(),
+                      "snoozeDuration": _snoozeDuration,
+                      "isActive": true,
+                    };
+
+                    // Save reminder to backend
+                    await saveReminderToBackend(
+                      title: newReminder["title"],
+                      description: newReminder["description"],
+                      category: newReminder["category"],
+                      dateTime: reminderDateTime,
+                      snoozeDuration: newReminder["snoozeDuration"],
+                    );
+
+                    // Schedule local notification
+                    await NotificationService.scheduleNotification(
+                      id: DateTime.now().millisecondsSinceEpoch ~/
+                          1000, // Unique ID
+                      title: newReminder["title"],
+                      body: newReminder["description"],
+                      scheduledTime: reminderDateTime,
+                      snoozeDuration: newReminder["snoozeDuration"],
+                    );
+
+                    // Pass the new reminder back to the previous screen
+                    Navigator.pop(context, newReminder);
+
+                    print("Reminder set successfully!");
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.ButtonColor,
