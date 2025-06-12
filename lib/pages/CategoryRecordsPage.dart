@@ -19,18 +19,14 @@ class _CategoryRecordsPageState extends State<CategoryRecordsPage> {
   Future<void> fetchRecords() async {
     try{
     final user = FirebaseAuth.instance.currentUser;
+   
+    
     final idToken = await user?.getIdToken();
-    final uri = Uri.parse("https://zindagigo.onrender.com/api/medical-records?category=${widget.category}");
+final uri = Uri.parse("https://zindagigo.onrender.com/api/medical-records?category=${widget.category}");
+print("Fetching records from: $uri");
 
-      //in the place of 10.10.226.179  give your ipconfig(run ipconfig in cmd and copy ipv4 ) if you want to run this on real device
-        // 10.0.2.2  this is for emulator
-        // also remember that your pc and device must be connected with same wifi
-        // Use localhost for emulator
-        // Replace with your server URL
-      
-  print("Fetching records from: $uri");
-
-    final response = await http.get(uri, headers: {'Authorization': 'Bearer $idToken'});
+    final response = await http.get(uri, headers: {'Authorization': 'Bearer $idToken'}).timeout(Duration(seconds: 10)
+    );
 
       if (response.statusCode == 200) {
       setState(() {
