@@ -25,9 +25,17 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   bool _obscureText = true;
 
+   @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
 //function to login using email-password
 
   Future<void> loginWithEmail() async {
+     if (!_formKey.currentState!.validate()) return;
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text,
@@ -41,6 +49,9 @@ class _LoginPageState extends State<LoginPage> {
       );
     } catch (e) {
       print("Login Error: $e");
+       ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Login failed: ${e.toString()}")),
+      );
     }
   }
 
@@ -159,7 +170,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: loginWithEmail,
+                onPressed:(){
+                   if (_formKey.currentState!.validate()) {
+                                               loginWithEmail();
+                                                          }
+                            } ,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.lineColor,
                   iconColor: AppColors.pink,
