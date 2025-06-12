@@ -13,7 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -26,13 +25,15 @@ void main() async {
   if (!isRunning) {
     service.startService();
   }
+
   await NotificationService.initialize(); 
-  runApp( MyApp());
+    runApp(MyApp());
 }
 
 Future<void> checkAndRequestBatteryOptimization() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool? isBatteryOptimizationDisabled =prefs.getBool('battery_optimization_disabled');
+  bool? isBatteryOptimizationDisabled =
+      prefs.getBool('battery_optimization_disabled');
 
   if (!(isBatteryOptimizationDisabled ?? false)) {
     AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
@@ -82,7 +83,7 @@ Future<void> initializeBackgroundService() async {
 
 // Background service function
 FutureOr<bool> _onBackgroundServiceStart(ServiceInstance service) async {
- if (service is AndroidServiceInstance) {
+  if (service is AndroidServiceInstance) {
     service.setForegroundNotificationInfo(
       title: "Zindagi Go - Fall Detection Active",
       content: "Monitoring your safety in the background.",
