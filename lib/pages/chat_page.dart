@@ -31,58 +31,62 @@ class _ChatPageState extends State<ChatPage> {
   };
 
   Future<void> sendMessage(String userMessage) async {
-    final response = await http.post(
-      Uri.parse('https://zindagigo.onrender.com/api/chat'),
-      //in the place of 10.0.2.2  give your ipconfig(run ipconfig in cmd and copy ipv4 ) if you want to run this on real device
-      // 10.0.2.2  this is for emulator
-      // also remember that your pc and device must be connected with same wifi
-      // Use localhost for emulator
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        "message": userMessage,
-        "targetLang": _selectedLanguage,
-      }),
-    );
+    try {
+      final response = await http.post(
+        Uri.parse('https://zindagigo.onrender.com/api/chat'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "message": userMessage,
+          "targetLang": _selectedLanguage,
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      setState(() {
-        messages.add({"user": userMessage});
-        messages.add({"bot": data["reply"]});
-      });
-      _controller.clear();
-    } else {
-      print("Error: ${response.statusCode}");
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          messages.add({"user": userMessage});
+          messages.add({"bot": data["reply"] ?? "no reply from bot"});
+        });
+        _controller.clear();
+      } else {
+        print("Error: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("network error: $e");
     }
   }
 
- void _startListening() async {
-    bool available = await _speech.initialize(
-      onStatus: (status) => print("Status: $status"),
-      onError: (error) => print("Error: $error"),
-    );
-
-    if (available) {
-      setState(() {
-        _isListening = true;
-      });
-
-      _speech.listen(
-        onResult: (result) {
-          setState(() {
-            _controller.text = result.recognizedWords;
-          });
-
-          if (result.finalResult && result.recognizedWords.isNotEmpty) {
-            _speech.stop(); // Ensure we stop listening
-            setState(() {
-              _isListening = false;
-            });
-            sendMessage(_controller.text); // Send only once
-          }
-        },
-        localeId: _selectedLanguage, // Set language for speech recognition
+  void _startListening() async {
+    try {
+      bool available = await _speech.initialize(
+        onStatus: (status) => print("Status: $status"),
+        onError: (error) => print("Error: $error"),
       );
+
+      if (available) {
+        setState(() {
+          _isListening = true;
+        });
+
+        _speech.listen(
+          onResult: (result) {
+            setState(() {
+              _controller.text = result.recognizedWords;
+            });
+
+            if (result.finalResult && result.recognizedWords.isNotEmpty) {
+              _speech.stop(); // Ensure we stop listening
+              setState(() {
+                _isListening = false;
+              });
+              sendMessage(_controller.text); // Send only once
+            }
+          },
+          localeId: _selectedLanguage, // Set language for speech recognition
+        );
+      }
+    } catch (e) {
+      print("Speech recognition initialization error: $e");
     }
   }
 
@@ -94,27 +98,37 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<void> _pickImageAndExtractText() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile == null) return;
+    try {
+      final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile == null) return;
 
-    File imageFile = File(pickedFile.path);
-    final inputImage = InputImage.fromFile(imageFile);
-    final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+      File imageFile = File(pickedFile.path);
+      final inputImage = InputImage.fromFile(imageFile);
+      final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
 
-    final RecognizedText recognizedText =
-        await textRecognizer.processImage(inputImage);
-    await textRecognizer.close();
+      final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
+      await textRecognizer.close();
 
-    String extractedText = recognizedText.text;
-    if (extractedText.isNotEmpty) {
-      setState(() {
-        _controller.text = extractedText; // Set extracted text in input
-      });
+      String extractedText = recognizedText.text;
+      if (extractedText.isNotEmpty) {
+        setState(() {
+          _controller.text = extractedText; // Set extracted text in input
+        });
 
-      // Ensure sendMessage() is only called once
-      sendMessage(extractedText);
+        sendMessage(extractedText);
+      }
+    } catch (e) {
+      print("Image text extraction error: $e");
     }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    if (_isListening) {
+      _speech.stop();
+    }
+    super.dispose();
   }
 
   @override
@@ -145,18 +159,14 @@ class _ChatPageState extends State<ChatPage> {
                 String key = messages[index].keys.first;
                 return ListTile(
                   title: Align(
-                    alignment: key == "user"
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
+                    alignment: key == "user" ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: key == "user"
-                            ? Colors.blue[100]
-                            : Colors.green[100],
+                        color: key == "user" ? Colors.blue[100] : Colors.green[100],
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text(messages[index][key]!),
+                      child: Text(messages[index][key] ?? ""),
                     ),
                   ),
                 );
@@ -174,11 +184,6 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                   onPressed: _isListening ? _stopListening : _startListening,
                 ),
-                // IconButton(
-                //   icon: Icon(Icons.mic, color: Colors.red),
-                //   onPressed: () {},
-                // ),
-
                 IconButton(
                   icon: Icon(Icons.upload_file, color: Colors.blue),
                   onPressed: _pickImageAndExtractText,
