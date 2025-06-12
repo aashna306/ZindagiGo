@@ -58,6 +58,8 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
 
     if (index == 1) {
       _startListening();
+    }else if (index == 2) {
+      Navigator.pushNamed(context, '/settingspage');
     }
   }
 
