@@ -47,7 +47,7 @@ class _ReminderPageState extends State<ReminderPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? encodedReminders = prefs.getStringList('reminders');
 
-    if (encodedReminders == null || encodedReminders.isEmpty) {
+    if (encodedReminders==null || encodedReminders.isEmpty) {
       reminders.clear();
       // First launch: add default reminders
       reminders.addAll([
