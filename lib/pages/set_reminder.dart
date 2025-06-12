@@ -14,7 +14,7 @@ Future<void> saveReminderToBackend({
   try {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.64.187:3000/api/reminders'), // Replace with your backend URL
+          'https://zindagigo.onrender.com/api/reminders'), // Replace with your backend URL
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'title': title,
@@ -66,6 +66,12 @@ class _SetReminderPageState extends State<SetReminderPage> {
   String _selectedDuration = 'Everyday';
   TimeOfDay _selectedTime = TimeOfDay.now();
   int _snoozeDuration = 5;
+    @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -400,9 +406,11 @@ class _SetReminderPageState extends State<SetReminderPage> {
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2101),
                   );
-                  setState(() {
-                    _selectedDate = pickedDate!;
-                  });
+                  if (pickedDate != null) {
+                    setState(() {
+                      _selectedDate = pickedDate;
+                    });
+                  }
                 },
                 child: Container(
                   width: double.infinity,
