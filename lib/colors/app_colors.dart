@@ -13,4 +13,5 @@ class AppColors {
   static const Color ButtonColor = Color(0xFFD4859E);
   static const Color Upload = Color.fromRGBO(132, 194, 164, 0.70);
   static const Color MedicalProfile = Color(0xFFD9D9D9);
+  static const Color purple = Color(0xFF5A4087);
 }
