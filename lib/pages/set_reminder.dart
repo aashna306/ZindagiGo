@@ -133,31 +133,46 @@ class _SetReminderPageState extends State<SetReminderPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Drawer Header
             DrawerHeader(
+              //decoration: BoxDecoration(color: AppColors.drawerColor),
               decoration: BoxDecoration(
-                color: AppColors.drawerColor,
+                color: AppColors.drawerColor, // Make sure it blends with the drawer background
               ),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.favorite,
-                    color: AppColors.pink,
-                    size: 50,
+                  SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: const Icon(
+                      Icons.favorite,
+                      color: AppColors.pink,
+                      size: 50,
+                    ),
                   ),
                   const SizedBox(width: 10),
                   const Text(
                     "HELLO USER!!",
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
+                  const Spacer(),
+                  // IconButton(
+                  //   icon: const Icon(Icons.close),
+                  //   onPressed: () {
+                  //     Navigator.pop(context);
+                  //   },
+                  // ),
                 ],
               ),
             ),
+
+            // Search Bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.searchBar,
-                  borderRadius: BorderRadius.circular(20),
+                  color: AppColors.searchBar, // Background color
+                  borderRadius: BorderRadius.circular(20), // Rounded corners
                   boxShadow: const [
                     BoxShadow(
                       color: Colors.black12,
@@ -176,7 +191,10 @@ class _SetReminderPageState extends State<SetReminderPage> {
                 ),
               ),
             ),
+
             const SizedBox(height: 10),
+
+            // Menu Items
             ListTile(
               leading: Image.asset(
                 'lib/imagesOrlogo/home2.png',
@@ -186,7 +204,7 @@ class _SetReminderPageState extends State<SetReminderPage> {
               title: const Text("Home"),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/homepage');
+                Navigator.pushNamed(context, '/home');
               },
             ),
             ListTile(
@@ -213,6 +231,17 @@ class _SetReminderPageState extends State<SetReminderPage> {
             ),
             ListTile(
               leading: Image.asset(
+                'lib/imagesOrlogo/phone.png',
+                width: 31,
+                height: 32,
+              ),
+              title: const Text("Help Numbers"),
+              onTap: () {
+                Navigator.pushNamed(context, '/helpNumbers');
+              },
+            ),            
+            ListTile(
+              leading: Image.asset(
                 'lib/imagesOrlogo/profile.png',
                 width: 25,
                 height: 26,
@@ -230,10 +259,13 @@ class _SetReminderPageState extends State<SetReminderPage> {
               ),
               title: const Text("Logout"),
               onTap: () {
-                Navigator.pushNamed(context, '/logoutpage');
+                // logout(context);
               },
             ),
+
             const Spacer(),
+
+            // Light & Dark Mode Toggle
             Padding(
               padding: const EdgeInsets.all(10),
               child: Row(
