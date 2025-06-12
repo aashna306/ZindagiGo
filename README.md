@@ -207,7 +207,7 @@ To ensure background services run properly, please disable battery optimization 
 ---
 
 ##  Demo Video
-[🔗 Watch the Demo](https://youtu.be/x6FV2Lsp5w0)
+[🔗 Watch the Demo](https://www.youtube.com/watch?v=oHOjTm3gElw)
 
 ---
 
