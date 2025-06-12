@@ -31,18 +31,24 @@ Enhanced Visibility: Use the built-in torch and zoom features to improve visibil
 8. **Upload & Categorize Prescriptions** =>
 Smart Organization: Upload prescriptions and let the app automatically categorize and store them for easy future reference.
 
-🔮 Upcoming Features (In Progress):
+🔮 New Features (In Progress):
 
 9. **Community Groups** =>
 Connect with like-minded individuals, join interest-based groups, and combat loneliness through socializing within the app.
 
-10. **Banking Assistance** =>
-Securely store pension records and access detailed, step-by-step video guides for making UPI payments with ease.
+10. **Help Line Numbers** =>
+Emergency numbers are given here to give fast access and they can also add those are important
 
-11. **Entertainment Recommendations** =>
+11. **Location Sharing** =>
+Automatic location is shared while SOS
+
+12. **Banking Assistance** =>
+Securely store pension records and access detailed
+
+13. **Entertainment Recommendations** =>
 Receive personalized suggestions for news, shows, and movies, tailored to your preferences.
 
-12. **Fitness Tracker** =>
+14. **Fitness Tracker** =>
 Track your daily steps and sleep cycle, with exercise recommendations based on your medical history for better health.
 
 ---
@@ -206,7 +212,7 @@ To ensure background services run properly, please disable battery optimization 
 ---
 
 ##  MVP link
- [🔗 Download APK](https://drive.google.com/drive/folders/1IeptxeWMiKFt-LKFsUkSzY7Hls4pXYun?usp=sharing)
+ [🔗 Download APK]([https://drive.google.com/drive/folders/1IeptxeWMiKFt-LKFsUkSzY7Hls4pXYun?usp=sharing](https://drive.google.com/drive/u/1/folders/1IeptxeWMiKFt-LKFsUkSzY7Hls4pXYun))
 
 ---
 
