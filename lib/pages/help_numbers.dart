@@ -1,68 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:gsc_project/colors/app_colors.dart';
-import 'package:gsc_project/main.dart';
+import 'package:gsc_project/pages/addContact.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class FitnessPage extends StatelessWidget {
-  const FitnessPage({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Help Numbers',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        fontFamily: 'Inter',
+      ),
+      home: const HelpNumbersPage(),
+    );
+  }
+}
+
+class HelpNumbersPage extends StatelessWidget {
+  const HelpNumbersPage({super.key});
+
+  Future<void> _launchPhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    } else {
+      // You might want to show a more user-friendly error message here,
+      // e.g., using a SnackBar or AlertDialog.
+      throw 'Could not launch $phoneNumber';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
-        child: Center(
-          child: Container(
-            width: 370,
-            height: 70,
-            decoration: BoxDecoration(
-              color: AppColors.navBarColor,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color.fromRGBO(0, 0, 0, 0.25),
-                  blurRadius: 5,
-                  spreadRadius: 1,
-                ),
-              ],
-            ),
-            child: Stack(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Builder(
-                    builder: (context) {
-                      return IconButton(
-                        icon: Image.asset(
-                          'lib/imagesOrlogo/Drawer.png',
-                          width: 50,
-                          height: 23,
-                        ),
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer();
-                        },
-                      );
-                    },
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Fitness",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      backgroundColor: const Color(0xFFFFF5F5), 
       drawer: Drawer(
         backgroundColor: AppColors.drawerColor,
         child: Column(
@@ -241,115 +222,97 @@ class FitnessPage extends StatelessWidget {
           ],
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
+      body: SingleChildScrollView( 
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16.0, 40.0, 16.0, 16.0), // Adjusted top padding
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Stats Card
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              // Top Bar with Menu and Title
               Container(
-                padding: EdgeInsets.all(16),
+                height: 56, // Height as per design
                 decoration: BoxDecoration(
-                  color: Color(0xFFE2E0F0),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(color: Colors.black26, blurRadius: 4)
-                  ],
+                  color: const Color(0xFFE0D6ED), // Background color: #E0D6ED
+                  borderRadius: BorderRadius.circular(15), // border-radius : 15px ;
                 ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.directions_walk, color: Color(0xFF37775D)),
-                        SizedBox(width: 8),
-                        Text("6,589 steps", style: TextStyle(fontSize: 16)),
-                      ],
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  children: <Widget>[
+                    IconButton(
+                      icon: const Icon(Icons.menu, color: Color(0xFF0C134F)),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
                     ),
-                    SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(Icons.timer, color: Color(0xFF594087)),
-                        SizedBox(width: 8),
-                        Text("60 mins", style: TextStyle(fontSize: 16)),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(Icons.local_fire_department, color: Color(0xFFD4859E)),
-                        SizedBox(width: 8),
-                        Text("145 kcal", style: TextStyle(fontSize: 16)),
-                      ],
-                    ),
-                    SizedBox(height: 16),
-                    CircularProgressIndicator(
-                      value: 0.75,
-                      backgroundColor: Colors.grey.shade300,
-                      color: Color(0xFF37775D),
-                      strokeWidth: 6,
-                    ),
-                    SizedBox(height: 8),
-                    Text("75% Daily goal"),
-                  ],
-                ),
-              ),
-              SizedBox(height: 16),
-
-              // Sleep Card
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Color(0xFFE2E0F0),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(color: Colors.black26, blurRadius: 4)
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Sleep", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 4),
-                    Text("8h 00m", style: TextStyle(fontSize: 16)),
-                    SizedBox(height: 8),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Color(0xFF594087),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        "22:00 - 6:00",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Color(0xFFA176C8),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          "Record this time",
-                          style: TextStyle(color: Colors.white),
-                        ),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Help Numbers',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0C134F),
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 16),
-
-              // Buttons
-              buildActivityButton(Icons.fitness_center, "Exercise", Color(0xFFD4859E)),
-              SizedBox(height: 12),
-              buildActivityButton(Icons.self_improvement, "Yoga", Color(0xFFD485A0)),
-              SizedBox(height: 12),
-              buildActivityButton(Icons.spa, "Meditation", Color(0xFFFFBDC8)),
+              const SizedBox(height: 16),
+              const Text(
+                "Don't worry — just tap a number, help is on the way",
+                style: TextStyle(
+                  fontSize: 14, 
+                  color: Color(0xFF0C134F),
+                ),
+              ),
+              const SizedBox(height: 24),
+              _buildEmergencyButton(  
+                context,
+                'Ambulance',
+                '102',
+                const Color(0xFFE2E0F0), 
+              ),
+              const SizedBox(height: 12),
+              _buildEmergencyButton(
+                context,
+                'Elder Line',
+                '14567',
+                const Color(0xFFE2E0F0),
+              ),
+              const SizedBox(height: 12),
+              _buildEmergencyButton(
+                context,
+                'Helpage India\n(Elder Helpline)',
+                '1800-180-1253',
+                const Color(0xFFE2E0F0),
+              ),
+              const SizedBox(height: 12),
+              _buildEmergencyButton(
+                context,
+                'Dignity Foundation',
+                '1800 267 8780',
+                const Color(0xFFE2E0F0),
+              ),
+              const SizedBox(height: 12),
+              _buildEmergencyButton(
+                context,
+                'Police Helpline\n(Senior Citizens)',
+                '1291',
+                const Color(0xFFE2E0F0),
+              ),
+              const SizedBox(height: 24),
+              Align(
+                alignment: Alignment.center,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AddHelpNumberPage()),
+                    );
+                  },
+                  backgroundColor: const Color(0xFF0C134F),
+                  child: const Icon(Icons.add, color: Colors.white),
+                ),
+              ),
             ],
           ),
         ),
@@ -357,24 +320,57 @@ class FitnessPage extends StatelessWidget {
     );
   }
 
-  Widget buildActivityButton(IconData icon, String label, Color color) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.black26, blurRadius: 4)
-        ],
+  Widget _buildEmergencyButton(
+    BuildContext context,
+    String title,
+    String number,
+    Color buttonColor,
+  ) {
+    return ElevatedButton(
+      onPressed: () {
+        _launchPhoneCall(number);
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: buttonColor, // Background color: #E2E0F0
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15), // border-radius : 15px ;
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        minimumSize: const Size(266, 50), // width : 266px ; height : 50px ;
       ),
-      padding: EdgeInsets.symmetric(vertical: 16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: Colors.black),
-          SizedBox(width: 8),
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500, // Changed font weight to w500
+                color: Color(0xFF0C134F),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
           Text(
-            label,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+            number,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500, // Changed font weight to w500
+              color: Color(0xFF0C134F),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Container(
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color(0xFF7FC8AA), // Changed color to #7FC8AA (green)
+            ),
+            padding: const EdgeInsets.all(8),
+            child: const Icon(
+              Icons.phone,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
