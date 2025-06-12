@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gsc_project/colors/app_colors.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:gsc_project/pages/notifications.dart';
 import 'package:gsc_project/pages/Reminder.dart';
 import 'package:gsc_project/pages/Zoom_page.dart';
 import '../services/auth_service.dart';
@@ -71,18 +75,20 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
     }
     _requestPermissions();
     _startFallDetection();
-    _startBackgroundService();
+   
   }
 
   // Request permissions
-  void _requestPermissions() async {
-  Map<Permission, PermissionStatus> statuses = await [
+ void _requestPermissions() async {
+  try{Map<Permission, PermissionStatus> statuses = await [
     Permission.activityRecognition,
     Permission.sensors,
     Permission.phone,
     Permission.microphone,
     Permission.camera,
     Permission.photos,
+     Permission.location,            
+      Permission.locationWhenInUse,
   ].request();
 
   if (statuses[Permission.phone]!.isDenied) {
@@ -91,8 +97,13 @@ StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
   if (statuses[Permission.microphone]!.isDenied) {
     print("Microphone permission denied. Voice SOS may not work.");
   }
+  if (statuses[Permission.location]!.isDenied) {
+      print("Location permission denied. Cannot share live location.");
+    }
+  }catch (e) {
+      print("Permission request error: $e");
+    }
 }
-
   
 void updateFromPayload(String payload) {
     final parts = payload.split('|');
@@ -105,7 +116,7 @@ void updateFromPayload(String payload) {
   }
 
   // Start fall detection using accelerometer
-  void _startFallDetection() async {
+ void _startFallDetection() async {
   _accelerometerSubscription = accelerometerEventStream().listen((event) {
       double acceleration = sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
 
@@ -131,8 +142,7 @@ void updateFromPayload(String payload) {
 
 
 
-  // Initialize background service
-  void _startBackgroundService() async {
+ void _startBackgroundService() async {
     final service = FlutterBackgroundService();
 
     await service.configure(
@@ -159,7 +169,7 @@ void updateFromPayload(String payload) {
 }
 // Start listening for voice commands
   void _startListening() async {
-    bool available = await _speech.initialize();
+try{    bool available = await _speech.initialize();
     if (available) {
       setState(() => _isListening = true);
       _speech.listen(onResult: (result) {
@@ -173,23 +183,69 @@ void updateFromPayload(String payload) {
       });
     } else {
       print("Speech recognition not available");
-    }
-  }
+    }}
+catch (e) {
+      print("Speech recognition error: $e");
+    }  }
+
 
 
   
-  void _makeCall() async {
-     try {
-    await platform.invokeMethod('makeCall', {'phoneNumber': '+91'});// put your emergency number
+ void _makeCall() async {
+  try {
+    print("Starting phone call...");
+    await platform.invokeMethod('makeCall', {'phoneNumber': '+917814644755'});
+    print("Phone call initiated.");
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      print("Location permission denied.");
+      String fallbackMessage = "⚠️ Emergency! Possible fall detected.\n📍 Location unavailable (permission denied).";
+      final fallbackUrl = Uri.parse("https://wa.me/917814644755?text=${Uri.encodeComponent(fallbackMessage)}");
+      if (await canLaunchUrl(fallbackUrl)) {
+        print("Launching fallback WhatsApp message without location...");
+        bool launched = await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
+        print("Fallback WhatsApp launch result: \$launched");
+      } else {
+        print("Could not open WhatsApp.");
+      }
+      return;
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    double lat = position.latitude;
+    double lng = position.longitude;
+
+    List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+    Placemark place = placemarks[0];
+    String address = "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+    String mapUrl = "https://www.google.com/maps/search/?api=1&query=$lat,$lng";
+    String message = "⚠️ Emergency! Possible fall detected.\n📍 Location: $address\n🗺️ Map: $mapUrl";
+    final whatsappUrl = Uri.parse("https://wa.me/917814644755?text=${Uri.encodeComponent(message)}");
+
+    if (await canLaunchUrl(whatsappUrl)) {
+      print("Launching WhatsApp message with location...");
+      bool launched = await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+      print("WhatsApp launch result: \$launched");
+    } else {
+      print("Could not open WhatsApp.");
+    }
   } on PlatformException catch (e) {
-    print("Failed to make call: '${e.message}'.");
+    print("Failed to make call: '\${e.message}'.");
   }
 }
 
 @override
   void dispose() {
     inactivityTimer?.cancel();
-    super.dispose();
+ _accelerometerSubscription?.cancel();
+    if (_isListening) {
+      _speech.stop();
+    }   
+     super.dispose();
   }
 
   void logout(BuildContext context) async {
