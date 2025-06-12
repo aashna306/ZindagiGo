@@ -212,7 +212,7 @@ To ensure background services run properly, please disable battery optimization 
 ---
 
 ##  MVP link
- [🔗 Download APK]([https://drive.google.com/drive/folders/1IeptxeWMiKFt-LKFsUkSzY7Hls4pXYun?usp=sharing](https://drive.google.com/drive/u/1/folders/1IeptxeWMiKFt-LKFsUkSzY7Hls4pXYun))
+ [🔗 Download APK](https://drive.google.com/drive/u/1/folders/1IeptxeWMiKFt-LKFsUkSzY7Hls4pXYun)
 
 ---
 
