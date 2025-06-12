@@ -24,7 +24,7 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
     <application
         android:label="gsc_project"
         android:name="${applicationName}"
@@ -107,6 +107,7 @@
 
     <!-- Queries for other apps -->
     <queries>
+       <package android:name="com.whatsapp" />
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
         </intent>
