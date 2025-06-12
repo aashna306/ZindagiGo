@@ -24,88 +24,87 @@ import 'package:sensors_plus/sensors_plus.dart';
 import 'dart:async';
 import 'dart:math';
 
-
-
 class HomePage extends StatefulWidget {
-
   static final GlobalKey<_HomePageState> globalKey =
       GlobalKey<_HomePageState>();
 
   final String? payload;
-   final Function(String)? onCompleteReminder;
-   HomePage({Key? key, this.payload,this.onCompleteReminder}) : super(key: globalKey);
+  final Function(String)? onCompleteReminder;
+  HomePage({Key? key, this.payload, this.onCompleteReminder})
+      : super(key: globalKey);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
- String title = "Medicine time";
-   String description = "take your medicines";
-bool _isCompleted=false;
+  String title = "Medicine time";
+  String description = "take your medicines";
+  bool _isCompleted = false;
   double threshold = 15.0; // G-force threshold for fall detection
   int inactivityTime = 5; // Time of inactivity after fall
   bool hasFallen = false;
   Timer? inactivityTimer;
-  String emergencyNumber = "+91";//your emergency number 
+  String emergencyNumber = "+91"; //your emergency number
   final stt.SpeechToText _speech = stt.SpeechToText();
   bool _isListening = false;
   final MethodChannel platform = MethodChannel('com.example.gsc_project/call');
-StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
-
+  StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
 
   int _selectedIndex = 0;
-    void _onItemTapped(int index) {
+  void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
 
     if (index == 1) {
       _startListening();
-    }else if (index == 2) {
+    } else if (index == 2) {
       Navigator.pushNamed(context, '/settingspage');
+    } else if (index == 3) {
+      Navigator.pushNamed(context, '/location');
     }
   }
 
   @override
   void initState() {
     super.initState();
-      if (widget.payload != null) {
+    if (widget.payload != null) {
       updateFromPayload(widget.payload!);
     }
     _requestPermissions();
     _startFallDetection();
-   
   }
 
   // Request permissions
- void _requestPermissions() async {
-  try{Map<Permission, PermissionStatus> statuses = await [
-    Permission.activityRecognition,
-    Permission.sensors,
-    Permission.phone,
-    Permission.microphone,
-    Permission.camera,
-    Permission.photos,
-     Permission.location,            
-      Permission.locationWhenInUse,
-  ].request();
+  void _requestPermissions() async {
+    try {
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.activityRecognition,
+        Permission.sensors,
+        Permission.phone,
+        Permission.microphone,
+        Permission.camera,
+        Permission.photos,
+        Permission.location,
+        Permission.locationWhenInUse,
+      ].request();
 
-  if (statuses[Permission.phone]!.isDenied) {
-    print("Phone call permission denied. Please enable it manually.");
-  }
-  if (statuses[Permission.microphone]!.isDenied) {
-    print("Microphone permission denied. Voice SOS may not work.");
-  }
-  if (statuses[Permission.location]!.isDenied) {
-      print("Location permission denied. Cannot share live location.");
-    }
-  }catch (e) {
+      if (statuses[Permission.phone]!.isDenied) {
+        print("Phone call permission denied. Please enable it manually.");
+      }
+      if (statuses[Permission.microphone]!.isDenied) {
+        print("Microphone permission denied. Voice SOS may not work.");
+      }
+      if (statuses[Permission.location]!.isDenied) {
+        print("Location permission denied. Cannot share live location.");
+      }
+    } catch (e) {
       print("Permission request error: $e");
     }
-}
-  
-void updateFromPayload(String payload) {
+  }
+
+  void updateFromPayload(String payload) {
     final parts = payload.split('|');
     if (parts.length == 2) {
       setState(() {
@@ -116,9 +115,10 @@ void updateFromPayload(String payload) {
   }
 
   // Start fall detection using accelerometer
- void _startFallDetection() async {
-  _accelerometerSubscription = accelerometerEventStream().listen((event) {
-      double acceleration = sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
+  void _startFallDetection() async {
+    _accelerometerSubscription = accelerometerEventStream().listen((event) {
+      double acceleration =
+          sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
 
       if (acceleration < 2.0) {
         hasFallen = true;
@@ -137,12 +137,9 @@ void updateFromPayload(String payload) {
         inactivityTimer?.cancel();
       }
     });
-
   }
 
-
-
- void _startBackgroundService() async {
+  void _startBackgroundService() async {
     final service = FlutterBackgroundService();
 
     await service.configure(
@@ -158,104 +155,110 @@ void updateFromPayload(String payload) {
   }
 
   // Background service function
- static void _onBackgroundServiceStart(ServiceInstance service) async {
-   accelerometerEventStream().listen((event) {
-      double acceleration = sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
+  static void _onBackgroundServiceStart(ServiceInstance service) async {
+    accelerometerEventStream().listen((event) {
+      double acceleration =
+          sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
       if (acceleration < 2.0) {
         service.invoke('fallDetected', {"message": "Fall detected!"});
       }
     });
+  }
 
-}
 // Start listening for voice commands
   void _startListening() async {
-try{    bool available = await _speech.initialize();
-    if (available) {
-      setState(() => _isListening = true);
-      _speech.listen(onResult: (result) {
-        String command = result.recognizedWords.toLowerCase();
-        print("Recognized: $command"); // Debugging
+    try {
+      bool available = await _speech.initialize();
+      if (available) {
+        setState(() => _isListening = true);
+        _speech.listen(onResult: (result) {
+          String command = result.recognizedWords.toLowerCase();
+          print("Recognized: $command"); // Debugging
 
-        if (command.contains("help")) {
-          _speech.stop(); // Stop listening after detecting the keyword
-          _makeCall();
-        }
-      });
-    } else {
-      print("Speech recognition not available");
-    }}
-catch (e) {
+          if (command.contains("help")) {
+            _speech.stop(); // Stop listening after detecting the keyword
+            _makeCall();
+          }
+        });
+      } else {
+        print("Speech recognition not available");
+      }
+    } catch (e) {
       print("Speech recognition error: $e");
-    }  }
+    }
+  }
 
+  void _makeCall() async {
+    try {
+      print("Starting phone call...");
+      await platform.invokeMethod('makeCall', {'phoneNumber': '+917814644755'});
+      print("Phone call initiated.");
 
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        print("Location permission denied.");
+        String fallbackMessage =
+            "⚠️ Emergency! Possible fall detected.\n📍 Location unavailable (permission denied).";
+        final fallbackUrl = Uri.parse(
+            "https://wa.me/917814644755?text=${Uri.encodeComponent(fallbackMessage)}");
+        if (await canLaunchUrl(fallbackUrl)) {
+          print("Launching fallback WhatsApp message without location...");
+          bool launched = await launchUrl(fallbackUrl,
+              mode: LaunchMode.externalApplication);
+          print("Fallback WhatsApp launch result: \$launched");
+        } else {
+          print("Could not open WhatsApp.");
+        }
+        return;
+      }
 
-  
- void _makeCall() async {
-  try {
-    print("Starting phone call...");
-    await platform.invokeMethod('makeCall', {'phoneNumber': '+917814644755'});
-    print("Phone call initiated.");
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
 
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
-      print("Location permission denied.");
-      String fallbackMessage = "⚠️ Emergency! Possible fall detected.\n📍 Location unavailable (permission denied).";
-      final fallbackUrl = Uri.parse("https://wa.me/917814644755?text=${Uri.encodeComponent(fallbackMessage)}");
-      if (await canLaunchUrl(fallbackUrl)) {
-        print("Launching fallback WhatsApp message without location...");
-        bool launched = await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
-        print("Fallback WhatsApp launch result: \$launched");
+      double lat = position.latitude;
+      double lng = position.longitude;
+
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+      Placemark place = placemarks[0];
+      String address =
+          "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+      String mapUrl =
+          "https://www.google.com/maps/search/?api=1&query=$lat,$lng";
+      String message =
+          "⚠️ Emergency! Possible fall detected.\n📍 Location: $address\n🗺️ Map: $mapUrl";
+      final whatsappUrl = Uri.parse(
+          "https://wa.me/917814644755?text=${Uri.encodeComponent(message)}");
+
+      if (await canLaunchUrl(whatsappUrl)) {
+        print("Launching WhatsApp message with location...");
+        bool launched =
+            await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+        print("WhatsApp launch result: \$launched");
       } else {
         print("Could not open WhatsApp.");
       }
-      return;
+    } on PlatformException {
+      print("Failed to make call: '\${e.message}'.");
     }
-
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-
-    double lat = position.latitude;
-    double lng = position.longitude;
-
-    List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
-    Placemark place = placemarks[0];
-    String address = "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
-    String mapUrl = "https://www.google.com/maps/search/?api=1&query=$lat,$lng";
-    String message = "⚠️ Emergency! Possible fall detected.\n📍 Location: $address\n🗺️ Map: $mapUrl";
-    final whatsappUrl = Uri.parse("https://wa.me/917814644755?text=${Uri.encodeComponent(message)}");
-
-    if (await canLaunchUrl(whatsappUrl)) {
-      print("Launching WhatsApp message with location...");
-      bool launched = await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
-      print("WhatsApp launch result: \$launched");
-    } else {
-      print("Could not open WhatsApp.");
-    }
-  } on PlatformException catch (e) {
-    print("Failed to make call: '\${e.message}'.");
   }
-}
 
-@override
+  @override
   void dispose() {
     inactivityTimer?.cancel();
- _accelerometerSubscription?.cancel();
+    _accelerometerSubscription?.cancel();
     if (_isListening) {
       _speech.stop();
-    }   
-     super.dispose();
+    }
+    super.dispose();
   }
 
   void logout(BuildContext context) async {
     await AuthService().signOut();
     Navigator.pushReplacement(
-      context, MaterialPageRoute(builder: (_) => WelcomePage())
-    );
+        context, MaterialPageRoute(builder: (_) => WelcomePage()));
   }
-
-
 
   bool isTorchOn = false;
 
@@ -345,7 +348,8 @@ catch (e) {
             DrawerHeader(
               //decoration: BoxDecoration(color: AppColors.drawerColor),
               decoration: BoxDecoration(
-                color: AppColors.drawerColor, // Make sure it blends with the drawer background
+                color: AppColors
+                    .drawerColor, // Make sure it blends with the drawer background
               ),
               child: Row(
                 children: [
@@ -400,7 +404,7 @@ catch (e) {
               ),
             ),
 
-            const SizedBox(height: 10), 
+            const SizedBox(height: 10),
 
             // Menu Items
             ListTile(
@@ -435,6 +439,17 @@ catch (e) {
               title: const Text("Notifications"),
               onTap: () {
                 Navigator.pushNamed(context, '/notificationpage');
+              },
+            ),
+            ListTile(
+              leading: Image.asset(
+                'lib/imagesOrlogo/phone.png',
+                width: 31,
+                height: 32,
+              ),
+              title: const Text("Help Numbers"),
+              onTap: () {
+                Navigator.pushNamed(context, '/helpNumbers');
               },
             ),
             ListTile(
@@ -545,7 +560,7 @@ catch (e) {
                                   bottomRight: Radius.circular(15),
                                 ),
                               ),
-                              child:  Center(
+                              child: Center(
                                 child: Text(
                                   title,
                                   style: TextStyle(
@@ -586,7 +601,6 @@ catch (e) {
                                 Container(
                                   width: 180,
                                   height: 30,
-                                  
                                   decoration: BoxDecoration(
                                     color: const Color(0xFFFFF5F5),
                                     borderRadius: const BorderRadius.only(
@@ -596,7 +610,7 @@ catch (e) {
                                       bottomLeft: Radius.circular(8),
                                     ),
                                   ),
-                                  child:  Center(
+                                  child: Center(
                                     child: Text(
                                       description,
                                       style: TextStyle(
@@ -607,26 +621,35 @@ catch (e) {
                                   ),
                                 ),
 
-                                const SizedBox(width: 10), // Space between name box & check button
+                                const SizedBox(
+                                    width:
+                                        10), // Space between name box & check button
 
                                 // Check button container
                                 GestureDetector(
-                                   onTap: () {
+                                  onTap: () {
                                     setState(() {
                                       _isCompleted = !_isCompleted;
                                     });
-                                      final id = NotificationService.tappedNotificationId;
-                                      if (id != null) {
-                                      NotificationService.cancelNotification(id);
-                                       ScaffoldMessenger.of(context).showSnackBar(
-                                         SnackBar(content: Text('Task Completed')), );
-                                                      } 
-                                      else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('No More Tasks')),); }
+                                    final id = NotificationService
+                                        .tappedNotificationId;
+                                    if (id != null) {
+                                      NotificationService.cancelNotification(
+                                          id);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text('Task Completed')),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text('No More Tasks')),
+                                      );
+                                    }
 
-                                          widget.onCompleteReminder?.call(title);
-
+                                    widget.onCompleteReminder?.call(title);
                                   },
                                   child: Container(
                                     width: 40,
@@ -642,7 +665,9 @@ catch (e) {
                                     child: Center(
                                       child: Icon(
                                         Icons.check_circle,
-                                        color: _isCompleted ? Colors.green : Colors.grey,
+                                        color: _isCompleted
+                                            ? Colors.green
+                                            : Colors.grey,
                                         size: 40,
                                       ),
                                     ),
@@ -650,7 +675,6 @@ catch (e) {
                                 ),
                               ],
                             ),
-
                             const SizedBox(height: 20),
                           ],
                         ),
@@ -678,7 +702,8 @@ catch (e) {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) =>  MedicalRecords()),
+                            MaterialPageRoute(
+                                builder: (context) => MedicalRecords()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
@@ -694,12 +719,12 @@ catch (e) {
                           height: 120,
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: Color(0xFFFFF5F5), 
+                            color: Color(0xFFFFF5F5),
                             borderRadius: BorderRadius.circular(20),
                             border: Border(
                               bottom: BorderSide(
-                                color: Color(0xFFD4859E), 
-                                width: 4, 
+                                color: Color(0xFFD4859E),
+                                width: 4,
                               ),
                             ),
                           ),
@@ -729,7 +754,8 @@ catch (e) {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const FitnessPage()),
+                            MaterialPageRoute(
+                                builder: (context) => const FitnessPage()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
@@ -749,8 +775,8 @@ catch (e) {
                             borderRadius: BorderRadius.circular(20),
                             border: Border(
                               bottom: BorderSide(
-                                color: Color(0xFFD4859E), 
-                                width: 4, 
+                                color: Color(0xFFD4859E),
+                                width: 4,
                               ),
                             ),
                           ),
@@ -780,7 +806,9 @@ catch (e) {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const EntertainmentPage()),
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const EntertainmentPage()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
@@ -796,12 +824,12 @@ catch (e) {
                           height: 120,
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: Color(0xFFFFF5F5), 
+                            color: Color(0xFFFFF5F5),
                             borderRadius: BorderRadius.circular(20),
                             border: Border(
                               bottom: BorderSide(
-                                color: Color(0xFFD4859E), 
-                                width: 4, 
+                                color: Color(0xFFD4859E),
+                                width: 4,
                               ),
                             ),
                           ),
@@ -834,12 +862,12 @@ catch (e) {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: Color(0xFFFFF5F5), 
+                          color: Color(0xFFFFF5F5),
                           borderRadius: BorderRadius.circular(20),
                           border: Border(
                             bottom: BorderSide(
-                              color: Color(0xFFD4C3D4), 
-                              width: 4, 
+                              color: Color(0xFFD4C3D4),
+                              width: 4,
                             ),
                           ),
                         ),
@@ -881,12 +909,12 @@ catch (e) {
                       const SizedBox(width: 30),
                       Container(
                         decoration: BoxDecoration(
-                          color: Color(0xFFFFF5F5), 
+                          color: Color(0xFFFFF5F5),
                           borderRadius: BorderRadius.circular(20),
                           border: Border(
                             bottom: BorderSide(
-                              color: Color(0xFFD4C3D4), 
-                              width: 4, 
+                              color: Color(0xFFD4C3D4),
+                              width: 4,
                             ),
                           ),
                         ),
@@ -894,15 +922,20 @@ catch (e) {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => ZoomPage()),
+                              MaterialPageRoute(
+                                  builder: (context) => ZoomPage()),
                             );
                           },
                           style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+                            backgroundColor:
+                                WidgetStateProperty.resolveWith<Color>(
+                                    (states) {
                               if (states.contains(WidgetState.pressed)) {
-                                return Color(0xFFD4C3D4); // Change color when pressed
+                                return Color(
+                                    0xFFD4C3D4); // Change color when pressed
                               } else if (states.contains(WidgetState.hovered)) {
-                                return Color(0xFFD4C3D4); // Change color when hovered
+                                return Color(
+                                    0xFFD4C3D4); // Change color when hovered
                               }
                               return Color(0xFFFFF5F5); // Default color
                             }),
@@ -911,7 +944,8 @@ catch (e) {
                                 borderRadius: BorderRadius.circular(50),
                               ),
                             ),
-                            elevation: WidgetStateProperty.resolveWith<double>((states) {
+                            elevation: WidgetStateProperty.resolveWith<double>(
+                                (states) {
                               if (states.contains(WidgetState.pressed)) {
                                 return 2; // Reduce elevation on press
                               }
@@ -950,12 +984,12 @@ catch (e) {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: Color(0xFFFFF5F5), 
+                          color: Color(0xFFFFF5F5),
                           borderRadius: BorderRadius.circular(20),
                           border: Border(
                             bottom: BorderSide(
-                              color: Color(0xFFD4C3D4), 
-                              width: 4, 
+                              color: Color(0xFFD4C3D4),
+                              width: 4,
                             ),
                           ),
                         ),
@@ -995,12 +1029,12 @@ catch (e) {
                       const SizedBox(width: 30),
                       Container(
                         decoration: BoxDecoration(
-                          color: Color(0xFFFFF5F5), 
+                          color: Color(0xFFFFF5F5),
                           borderRadius: BorderRadius.circular(20),
                           border: Border(
                             bottom: BorderSide(
-                              color: Color(0xFFD4C3D4), 
-                              width: 4, 
+                              color: Color(0xFFD4C3D4),
+                              width: 4,
                             ),
                           ),
                         ),
@@ -1022,7 +1056,7 @@ catch (e) {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Image.asset(
-                                    'lib/imagesOrlogo/Bank.png', 
+                                    'lib/imagesOrlogo/Bank.png',
                                     width: 30,
                                     height: 30,
                                   ),
@@ -1052,7 +1086,8 @@ catch (e) {
                   padding: const EdgeInsets.only(right: 20, bottom: 30),
                   child: IconButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatPage()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => ChatPage()));
                     },
                     icon: Image.asset(
                       'lib/imagesOrlogo/Chatbot.png',
@@ -1079,7 +1114,8 @@ catch (e) {
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: const Color(0xFFE2E0F0),
@@ -1114,8 +1150,8 @@ catch (e) {
                       label: 'Location',
                     ),
                   ],
-                    currentIndex: _selectedIndex,
-                    onTap: _onItemTapped,
+                  currentIndex: _selectedIndex,
+                  onTap: _onItemTapped,
                 ),
               ),
             ),
@@ -1146,7 +1182,8 @@ catch (e) {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ReminderPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const ReminderPage()),
                     );
                   },
                   backgroundColor: Colors.transparent,
