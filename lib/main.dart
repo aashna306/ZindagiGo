@@ -12,6 +12,10 @@ import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:gsc_project/pages/location.dart';
+import 'package:gsc_project/pages/help_numbers.dart';
+
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -121,6 +125,8 @@ class MyApp extends StatelessWidget {
         '/user_info': (context) => UserInfoPage(),
         '/home': (context) => HomePage(),
         '/MedicalRecords': (context) => MedicalRecords(),
+        '/location': (context) =>  LocationPage(),
+        '/helpNumbers': (context) => HelpNumbersPage(),
       },
       theme: ThemeData(),
     );
