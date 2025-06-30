@@ -7,6 +7,9 @@ const admin = require("firebase-admin");
 const userRoutes = require("./routes/userRoute");
 const chatRoutes = require('./routes/chatRoute');
 const medicalRecordRoutes = require('./routes/medicalRecordRoute');
+const locationRoutes = require('./routes/location');
+const placesRoutes = require('./routes/places');
+const routingRoutes = require('./routes/routing');
 //const reminderRoutes = require('./routes/reminder');
 //const exerciseRoutes = require('./routes/exerciseRoute');
 const app = express();
@@ -30,6 +33,9 @@ app.use('/api', chatRoutes);
 //app.use('/api', reminderRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/medical-records", medicalRecordRoutes);
+app.use('/api/location', locationRoutes);
+app.use('/api/places', placesRoutes);
+app.use('/api/routing', routingRoutes);
 //app.use('/api/exercises', exerciseRoutes);
 
 
