@@ -11,7 +11,7 @@ const locationRoutes = require('./routes/location');
 const placesRoutes = require('./routes/places');
 const routingRoutes = require('./routes/routing');
 //const reminderRoutes = require('./routes/reminder');
-//const exerciseRoutes = require('./routes/exerciseRoute');
+const fitnessRoutes = require('./routes/fitnessRoute');
 const app = express();
 
 const serviceAccount = require("./config/serviceAccountKey.json");
@@ -36,7 +36,7 @@ app.use("/api/medical-records", medicalRecordRoutes);
 app.use('/api/location', locationRoutes);
 app.use('/api/places', placesRoutes);
 app.use('/api/routing', routingRoutes);
-//app.use('/api/exercises', exerciseRoutes);
+app.use('/api/fitness', fitnessRoutes);
 
 
 const PORT = process.env.PORT || 5000;
