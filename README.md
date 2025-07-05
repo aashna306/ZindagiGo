@@ -31,25 +31,27 @@ Enhanced Visibility: Use the built-in torch and zoom features to improve visibil
 8. **Upload & Categorize Prescriptions** =>
 Smart Organization: Upload prescriptions and let the app automatically categorize and store them for easy future reference.
 
-🔮 New Features (In Progress):
-
-9. **Community Groups** =>
-Connect with like-minded individuals, join interest-based groups, and combat loneliness through socializing within the app.
-
-10. **Help Line Numbers** =>
+9. **Help Line Numbers** =>
 Emergency numbers are given here to give fast access and they can also add those are important
 
-11. **Location Sharing** =>
+10. **Location Sharing** =>
 Automatic location is shared while SOS
 
-12. **Banking Assistance** =>
+11. **Fitness Tracker** =>
+Track your daily steps and sleep cycle, with exercise recommendations based on your medical history for better health.
+
+
+🔮 New Features (In Progress):
+
+12. **Community Groups** =>
+Connect with like-minded individuals, join interest-based groups, and combat loneliness through socializing within the app.
+
+13. **Banking Assistance** =>
 Securely store pension records and access detailed
 
-13. **Entertainment Recommendations** =>
+14. **Entertainment Recommendations** =>
 Receive personalized suggestions for news, shows, and movies, tailored to your preferences.
 
-14. **Fitness Tracker** =>
-Track your daily steps and sleep cycle, with exercise recommendations based on your medical history for better health.
 
 ---
 
