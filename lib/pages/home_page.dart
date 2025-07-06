@@ -631,24 +631,19 @@ class _HomePageState extends State<HomePage> {
                                     setState(() {
                                       _isCompleted = !_isCompleted;
                                     });
-                                    final id = NotificationService
-                                        .tappedNotificationId;
+                                    final id = NotificationService.tappedNotificationId;
                                     if (id != null) {
-                                      NotificationService.cancelNotification(
-                                          id);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
+                                      NotificationService.cancelNotification(id);
+                                      ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                             content: Text('Task Completed')),
                                       );
                                     } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
+                                      ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                             content: Text('No More Tasks')),
                                       );
                                     }
-
                                     widget.onCompleteReminder?.call(title);
                                   },
                                   child: Container(
