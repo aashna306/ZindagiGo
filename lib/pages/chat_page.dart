@@ -114,7 +114,6 @@ class _ChatPageState extends State<ChatPage> {
         child: SafeArea(
           child: Column(
             children: [
-              // 🌟 Custom AppBar with back arrow and title
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                 child: Row(
@@ -154,8 +153,6 @@ class _ChatPageState extends State<ChatPage> {
                   ],
                 ),
               ),
-
-              // 📝 Chat message list
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -203,8 +200,6 @@ class _ChatPageState extends State<ChatPage> {
                   },
                 ),
               ),
-
-              // 🧠 Input bar with mic, image upload, send
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 child: Row(
