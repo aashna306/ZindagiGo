@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { saveUser } = require("../controllers/userController");
+const { saveUser,changeCaretaker } = require("../controllers/userController");
 
 router.post('/saveUser', saveUser);
+router.post('/changeCaretaker', changeCaretaker);
 
 module.exports = router;
