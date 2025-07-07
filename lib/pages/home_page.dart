@@ -57,12 +57,14 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex = index;
     });
 
-    if (index == 1) {
+    if (index == 0) {
+      Navigator.pushNamed(context, '/profilepage');
+    }
+    else if (index == 1) {
       _startListening();
-    } else if (index == 2) {
+    }
+    else if (index == 2) {
       Navigator.pushNamed(context, '/settingspage');
-    } else if (index == 3) {
-      Navigator.pushNamed(context, '/location');
     }
   }
 
@@ -416,7 +418,6 @@ class _HomePageState extends State<HomePage> {
               title: const Text("Home"),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/home');
               },
             ),
             ListTile(
