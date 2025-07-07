@@ -99,12 +99,14 @@ class _MedicalRecordsState extends State<MedicalRecords> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(100),
         child: Center(
           child: Container(
-            width: 370,
+            width: screenWidth * 0.9,
             height: 70,
             decoration: BoxDecoration(
               color: AppColors.navBarColor,
@@ -227,7 +229,7 @@ class _MedicalRecordsState extends State<MedicalRecords> {
               title: const Text("Home"),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/home');
+                Navigator.pop(context);
               },
             ),
             ListTile(
@@ -331,126 +333,41 @@ class _MedicalRecordsState extends State<MedicalRecords> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05, vertical: 16),
           child: Column(
             children: [
-              Container(
-                padding: const EdgeInsets.all(20.0),
-                decoration: BoxDecoration(
-                  color: AppColors.navBarColor,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 5,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundImage: AssetImage('lib/imagesOrlogo/CompleteProfile.png'),
-                    ),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          "S. K. Dogra",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          "Gender: Male    Age: 80",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Text(
-                          "Weight: 72 Kg ",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              _buildUserCard(),
               const SizedBox(height: 16),
-              Container(
-                width: double.infinity,
-                height: 70, // Increased height
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(40),
-                  border: const Border(
-                    bottom: BorderSide(color: Color(0xFF2D2D2D), width: 1),
-                  ),
-                ),
-                child: ElevatedButton(
-                  // onPressed: () {
-                  // Upload action
-                  onPressed: _isUploading
-                      ? null
-                      : () async {
-                          setState(() {
-                            _isUploading = true;
-                          });
-
-                          await pickExtractAndUpload();
-
-                          setState(() {
-                            _isUploading = false;
-                          });
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.Upload,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "Upload",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Image.asset(
-                        'lib/imagesOrlogo/Upload.png',
-                        height: 24,
-                        width: 24,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              _buildUploadButton(),
               const SizedBox(height: 16),
-              GridView.count(
-                shrinkWrap: true,
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                children: [
-                  _buildGridButton("Allergies", Icons.medical_services),
-                  _buildGridButton("Prescriptions", Icons.receipt),
-                  _buildGridButton("Medical History", Icons.history),
-                  _buildGridButton("Hospitalizations", Icons.local_hospital),
-                  _buildGridButton("Vaccinations", Icons.vaccines),
-                  _buildGridButton("Procedures", Icons.medical_services),
-                  _buildGridButton("Test Reports", Icons.report),
-                  _buildGridButton("Dr.'s Contacts", Icons.contact_phone),
-                ],
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 200,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 1,
+                    ),
+                    itemCount: 8,
+                    itemBuilder: (context, index) {
+                      final List<Map<String, dynamic>> gridItems = [
+                        {"title": "Allergies", "icon": Icons.medical_services},
+                        {"title": "Prescriptions", "icon": Icons.receipt},
+                        {"title": "Medical History", "icon": Icons.history},
+                        {"title": "Hospitalization", "icon": Icons.local_hospital},
+                        {"title": "Vaccinations", "icon": Icons.vaccines},
+                        {"title": "Procedures", "icon": Icons.medical_services},
+                        {"title": "Test Reports", "icon": Icons.report},
+                        {"title": "Dr.'s Contacts", "icon": Icons.contact_phone},
+                      ];
+                      final item = gridItems[index];
+                      return _buildGridButton(item["title"], item["icon"]);
+                    },
+                  );
+                },
               ),
             ],
           ),
@@ -459,21 +376,66 @@ class _MedicalRecordsState extends State<MedicalRecords> {
     );
   }
 
+  Widget _buildUserCard() {
+    return Container(
+      padding: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        color: AppColors.navBarColor,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)],
+      ),
+      child: Row(
+        children: [
+          const CircleAvatar(radius: 40, backgroundImage: AssetImage('lib/imagesOrlogo/CompleteProfile.png')),
+          const SizedBox(width: 16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text("S. K. Dogra", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text("Gender: Male    Age: 80", style: TextStyle(fontSize: 15)),
+              Text("Weight: 72 Kg", style: TextStyle(fontSize: 15)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUploadButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 70,
+      child: ElevatedButton(
+        onPressed: _isUploading ? null : pickExtractAndUpload,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.Upload,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("Upload", style: TextStyle(fontSize: 20, color: Colors.black)),
+            const SizedBox(width: 10),
+            Image.asset('lib/imagesOrlogo/Upload.png', height: 24, width: 24),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildGridButton(String title, IconData icon) {
     return ElevatedButton(
       onPressed: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => CategoryRecordsPage(category: title),
-    ),
-  );
-},
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CategoryRecordsPage(category: title),
+          ),
+        );
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.pink,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         padding: const EdgeInsets.all(16),
         elevation: 5,
         shadowColor: Colors.black12,
@@ -483,14 +445,7 @@ class _MedicalRecordsState extends State<MedicalRecords> {
         children: [
           Icon(icon, size: 40, color: Colors.black),
           const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
+          Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
         ],
       ),
     );
