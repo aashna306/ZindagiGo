@@ -17,6 +17,7 @@ class UserInfoPage extends StatelessWidget {
     final countryCodeController = TextEditingController();
     final emailController = TextEditingController();
     final emergencyContactController = TextEditingController();
+    final caretakerEmail = TextEditingController();
     String? selectedGender;
 
     Future<void> saveUserData(BuildContext context) async {
@@ -49,6 +50,7 @@ class UserInfoPage extends StatelessWidget {
           "phone": phoneController.text,
           "email": emailController.text,
           "emergencyContact": emergencyContactController.text,
+          "caretaker email": caretakerEmail.text,
         }),
       );
 
@@ -300,6 +302,37 @@ class UserInfoPage extends StatelessWidget {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter an emergency contact';
+                    }
+                    if (value.length != 10) {
+                      return 'Phone number must be 10 digits';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              const SizedBox(height: 40),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: TextFormField(
+                  controller: caretakerEmail,
+                  decoration: InputDecoration(
+                    labelText: "Email Of Caretaker",
+                    labelStyle: TextStyle(color: AppColors.InputInfo),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide:
+                      BorderSide(color: AppColors.lineColor, width: 3.0),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.pink, width: 3.0),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                    if (!emailRegex.hasMatch(value)) {
+                      return 'Please enter a valid email';
                     }
                     return null;
                   },
