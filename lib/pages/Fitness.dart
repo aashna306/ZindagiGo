@@ -139,7 +139,7 @@ class FitnessPage extends StatelessWidget {
               title: const Text("Home"),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/home');
+                Navigator.pop(context);
               },
             ),
             ListTile(
