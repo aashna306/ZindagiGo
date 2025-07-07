@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:gsc_project/pages/MedicalRecords.dart';
+import 'package:gsc_project/pages/Fitness.dart';
+import 'package:gsc_project/pages/Reminder.dart';
+import 'package:gsc_project/pages/notificationPage.dart';
+import 'package:gsc_project/pages/profile_page.dart';
+import 'package:gsc_project/pages/settings_page.dart';
+import 'package:gsc_project/pages/help_numbers.dart';
+import 'package:gsc_project/pages/HomepageCaretaker.dart';
 import 'package:gsc_project/pages/notifications.dart';
 import 'firebase_options.dart';
 import 'package:gsc_project/pages/new_Account.dart';
@@ -124,9 +131,15 @@ class MyApp extends StatelessWidget {
         '/new_account': (context) => NewAccountPage(),
         '/user_info': (context) => UserInfoPage(),
         '/home': (context) => HomePage(),
-        '/MedicalRecords': (context) => MedicalRecords(),
+        '/medicalRecords': (context) => MedicalRecords(),
         '/location': (context) =>  LocationPage(),
         '/helpNumbers': (context) => HelpNumbersPage(),
+        '/notificationpage': (context) => NotificationsPage(),
+        '/profilepage': (context) => ProfilePage(),
+        '/settingspage': (context) => SettingsPage(),
+        '/fitnessPage': (context) => FitnessPage(),
+        '/homeCaretaker': (context) => HomepageCaretaker(),
+        '/reminderpage': (context) => ReminderPage(),
       },
       theme: ThemeData(),
     );
