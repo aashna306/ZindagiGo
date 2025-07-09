@@ -1,4 +1,4 @@
-const nominatimService = require('../services/nominatimService');
+const nominatimService = require('../services/nominationService');
 
 class LocationController {
   async reverseGeocode(req, res) {
