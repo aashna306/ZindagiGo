@@ -29,6 +29,9 @@ app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.send('Welcome to ZindagiGo API! 🎉');
+});
 app.use('/api', chatRoutes);
 //app.use('/api', reminderRoutes);
 app.use("/api/users", userRoutes);
