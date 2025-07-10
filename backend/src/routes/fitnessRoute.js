@@ -3,6 +3,9 @@ const router = express.Router();
 const fitnessController = require('../controllers/fitnessController');
 
 router.post('/recommend', fitnessController.recommendExercises);
+router.post('/recommendYoga', fitnessController.recommendYoga);
+router.post('/recommendDiet', fitnessController.recommendDiet);
+
 router.post('/log', fitnessController.logFitnessData);
 router.patch('/exercise-check', fitnessController.markExerciseDone);
 router.get('/logs', fitnessController.getFitnessLogs);
