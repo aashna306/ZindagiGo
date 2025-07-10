@@ -66,9 +66,10 @@ async function categorizeText(text) {
         'Dr s Contacts',
     ];
 
-    const category = validCategories.find((cat) =>
-      rawCategory.toLowerCase().includes(cat)
-    );
+   const category = validCategories.find((cat) =>
+  cat.toLowerCase() === rawCategory.trim().toLowerCase()
+);
+
 
     return category || 'Medical History';
   } catch (error) {
@@ -104,7 +105,8 @@ exports.uploadMedicalRecord = [
       }
 
       const { title, description, processedText } = req.body;
-      const firebaseUID = req.user.uid;
+      // const firebaseUID = req.user.uid;
+const firebaseUID = req.body.firebaseUID || req.user.uid;
 
       if (!title || !processedText) {
         return res.status(400).json({
@@ -160,7 +162,9 @@ exports.getMedicalRecords = [
   verifyToken,
   async (req, res) => {
     try {
-      const firebaseUID = req.user.uid;
+      // const firebaseUID = req.user.uid;
+      const firebaseUID = req.query.firebaseUID || req.user.uid;
+
       const { category } = req.query;
 
       let query = { firebaseUID };
@@ -168,14 +172,24 @@ exports.getMedicalRecords = [
       if (category) {
         query.category = new RegExp('^' + category + '$', 'i'); //case-insensitive
       }
-
+ 
+    console.log("==== Fetch Medical Records ====");
+console.log("Logged-in UID from token:", req.user.uid);
+console.log("Requested firebaseUID:", req.query.firebaseUID);
+console.log("Category:", req.query.category);
       const records = await MedicalRecord.find(query).sort({ createdAt: -1 });
+console.log("Total records fetched:", records.length);
+console.log("Query used:", query);
 
       res.status(200).json({
         success: true,
         count: records.length,
         data: records,
       });
+
+
+
+
     } catch (error) {
       console.error('Error in getMedicalRecords:', error);
       res.status(500).json({
