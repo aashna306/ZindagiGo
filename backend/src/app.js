@@ -14,10 +14,17 @@ const routingRoutes = require('./routes/routing');
 const fitnessRoutes = require('./routes/fitnessRoute');
 const app = express();
 
-const serviceAccount = require("./config/serviceAccountKey.json");
+//const serviceAccount = require("./config/serviceAccountKey.json");
+//admin.initializeApp({
+//  credential: admin.credential.cert(serviceAccount),
+//});
+
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
+
 
 MONGO_URI=process.env.MONGO_URI
 mongoose
